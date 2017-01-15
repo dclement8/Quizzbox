@@ -1,4 +1,5 @@
 <?php
+namespace quizzbox\model;
 
 class question extends \Illuminate\Database\Eloquent\Model {
 	protected $table = 'question';
