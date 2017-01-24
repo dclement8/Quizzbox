@@ -1,5 +1,5 @@
 <?php
-namespace lbs;
+namespace quizzbox;
 use \Illuminate\Database\Capsule\Manager;
 
 class AppInit
