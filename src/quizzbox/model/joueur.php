@@ -1,16 +1,18 @@
 <?php
 namespace quizzbox\model;
 
-class quizz extends \Illuminate\Database\Eloquent\Model {
-	protected $table = 'quizz';
+class joueur extends \Illuminate\Database\Eloquent\Model
+{
+	// Database
+	protected $table = 'joueur';
 	protected $primaryKey = 'id';
+	
 	public $timestamps = false;
-
-    public function quizzs() {
-		return $this->belongsToMany(
-			'games\model\quizz',
-			'jouer',
-			'id_joueur', 'id_quizz'
-		);
+	
+	
+	// scores
+	public function scores()
+	{
+		return $this->belongsToMany("\quizzbox\model\quizz","scores","id_joueur","id_quizz");
 	}
 }

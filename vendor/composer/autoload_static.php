@@ -4,12 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
+class ComposerStaticInit507b7480eee7bfffa12d509aff71fa62
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -18,13 +19,23 @@ class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Translation\\' => 30,
             'Stringy\\' => 8,
+            'Slim\\' => 5,
+        ),
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
         ),
         'I' => 
         array (
+            'Interop\\Container\\' => 18,
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Database\\' => 20,
             'Illuminate\\Contracts\\' => 21,
             'Illuminate\\Container\\' => 21,
+        ),
+        'F' => 
+        array (
+            'FastRoute\\' => 10,
         ),
         'C' => 
         array (
@@ -45,6 +56,18 @@ class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
         array (
             0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
         ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Interop\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
         'Illuminate\\Support\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/support',
@@ -61,6 +84,10 @@ class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
         array (
             0 => __DIR__ . '/..' . '/illuminate/container',
         ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
@@ -75,6 +102,27 @@ class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
                 0 => __DIR__ . '/../..' . '/src',
             ),
         ),
+        'S' => 
+        array (
+            'SecurityLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/security-lib/lib',
+            ),
+        ),
+        'R' => 
+        array (
+            'RandomLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/random-lib/lib',
+            ),
+        ),
+        'P' => 
+        array (
+            'Pimple' => 
+            array (
+                0 => __DIR__ . '/..' . '/pimple/pimple/src',
+            ),
+        ),
         'D' => 
         array (
             'Doctrine\\Common\\Inflector\\' => 
@@ -87,9 +135,9 @@ class ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc2939b611ddcfe7ccf25f7e43d41b2d8::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit507b7480eee7bfffa12d509aff71fa62::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit507b7480eee7bfffa12d509aff71fa62::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit507b7480eee7bfffa12d509aff71fa62::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

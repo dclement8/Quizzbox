@@ -1,24 +1,24 @@
 <?php
 namespace quizzbox\model;
 
-class quizz extends \Illuminate\Database\Eloquent\Model {
+class quizz extends \Illuminate\Database\Eloquent\Model
+{
+	// Database
 	protected $table = 'quizz';
 	protected $primaryKey = 'id';
+	
 	public $timestamps = false;
-
-	public function questions() {
-		return $this->hasMany('quizzbox\model\question', 'id_quizz');
+	
+	
+	// catégorie ; quizz
+	public function categorieQuizz()
+	{
+		return $this->belongsTo("\quizzbox\model\categorie","id_categorie");
 	}
-
-    public function categorie() {
-    	return $this->belongsTo('games\model\categorie', 'id_categorie');
-    }
-
-    public function joueurs() {
-		return $this->belongsToMany(
-			'games\model\joueur',
-			'jouer',
-			'id_quizz', 'id_joueur'
-		);
+	
+	// scores
+	public function scores()
+	{
+		return $this->belongsToMany("\quizzbox\model\joueur","scores","id_quizz","id_joueur");
 	}
 }

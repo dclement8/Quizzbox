@@ -1,75 +1,102 @@
 <?php
 namespace quizzbox\view;
-class QuizzboxView extends AbstractView {
-    /* Constructeur
-    *
-    * On appelle le constructeur de la classe parent
-    *
-    */
-    public function __construct($data) {
-        parent::__construct($data);
+
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+
+class quizzboxview
+{
+	protected $data = null ;
+
+    public function __construct($data)
+	{
+        $this->data = $data;
     }
 
-    /* ... */
+	private function getStatus() {
+		if(array_key_exists('status', $this->data)) {
+			if(is_numeric($this->data['status'])) {
+				$status = $this->data['status'];
+				unset($this->data['status']);
+				return $status;
+			}
+		}
+		return 400;
+	}
 
-    /*
-     * Affiche une page HTML complète.
-     *
-     * En fonction du sélecteur, le contenu de la page changera.
-     *
-     */
-    public function render($selector) {
-        switch($selector) {
-			/*case 'exemple':
-                $breadcrumb = $this->renderBreadcrumb(array(array('Exemple', '/exemple/')));
-				$main = $this->exemple();
+	
+	private function header($req, $resp, $args)
+	{
+		$html = "
+			<!DOCTYPE html>
+			<html lang='fr'>
+				<head>
+					<meta charset='UTF-8'>
+					<meta name='viewport' content='width=device-width, initial-scale=1'>
+					<title>Quizzbox</title>
+					<script src='jquery.min.js'></script>
+					<script src='script.js'></script>
+					<link rel='stylesheet' type='text/css' href='css/style.css'/>
+				</head>
+				<body>
+					<header>
+						<h1>
+							Quizzbox
+						</h1>
+					</header>
+					
+		";
+		if(isset($_SESSION["message"]))
+		{
+			$html .= "<div id='message'>".filter_var($_SESSION["message"], FILTER_SANITIZE_FULL_SPECIAL_CHARS)."</div>";
+			unset($_SESSION["message"]);
+		}
+		$html .= "
+					
+					<div id='content'>
+		";
+		
+		return $html;
+	}
+	
+	private function footer($req, $resp, $args)
+	{
+		$html = "
+					</div>
+					<footer>
+						Quizzbox
+					</footer>
+				</body>
+			</html>
+		";
+		
+		return $html;
+	}
+	
+	
+	// -----------
+	
+	
+    private function exemple($req, $resp, $args)
+	{
+		$html = "";
+		return $html;
+    }
+
+	public function render($selector, $req, $resp, $args)
+	{
+		$html = $this->header($req, $resp, $args);
+		
+		switch($selector)
+		{
+			case "exemple":
+				$this->resp = $this->exemple($req, $resp, $args);
 				break;
-			default:
-                $breadcrumb = $this->renderBreadcrumb();
-                $main = $this->default();
-				break;*/
-        }
-
-        $style_file = $this->app_root.'css/main.css';
-        $header 	= $this->renderHeader();
-        $menu   	= $this->renderMenu();
-		$messages	= $this->renderMessage();
-		$footer		= $this->renderFooter();
-
-        /*
-         * Utilisation de la syntaxe HEREDOC pour écrire la chaine de caractère de
-         * la page entière. Voir la documentation ici:
-         *
-         * http://php.net/manual/fr/language.types.string.php#language.types.string.syntax.heredoc
-         *
-         * Noter bien l'utilisation des variables dans la chaine de caractère
-         *
-         */
-
-        $html = <<<EOT
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="utf-8">
-        <title>Quizzbox</title>
-		<meta name="viewport" content="width=device-width,initial-scale=1.0">
-		<link rel="shortcut icon" href="{$this->app_root}/favicon.ico">
-        <link rel="stylesheet" href="${style_file}">
-		<script type="text/javascript" src="{$this->app_root}/js/main.js"></script>
-    </head>
-    <body>
-        ${header}
-        ${menu}
-		${breadcrumb}
-		${messages}
-		<div class="container line">
-			${main}
-		</div>
-		${footer}
-    </body>
-</html>
-EOT;
-
-        echo $html;
-    }
+		}
+		
+		$html .= $this->footer($req, $resp, $args);
+		
+		$resp->getBody()->write($html);
+		return $resp;
+	}
 }
