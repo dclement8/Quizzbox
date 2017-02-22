@@ -24,7 +24,6 @@ CREATE TABLE quizz(
 CREATE TABLE joueur(
         id         int (11) Auto_increment  NOT NULL ,
         pseudo     Varchar (255) ,
-        motdepasse Varchar (500) ,
         PRIMARY KEY (id ) ,
         UNIQUE (pseudo )
 )ENGINE=InnoDB;
@@ -79,7 +78,7 @@ CREATE TABLE scores(
         typeJeu   Int ,
         id_joueur Int NOT NULL ,
         id_quizz  Int NOT NULL ,
-        PRIMARY KEY (id ,id_quizz )
+        PRIMARY KEY (id_joueur ,id_quizz )
 )ENGINE=InnoDB;
 
 ALTER TABLE quizz ADD CONSTRAINT FK_quizz_id_categorie FOREIGN KEY (id_categorie) REFERENCES categorie(id);
