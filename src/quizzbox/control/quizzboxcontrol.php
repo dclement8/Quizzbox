@@ -127,13 +127,28 @@ class quizzboxcontrol
 	
 	public function networkCategories(Request $req, Response $resp, $args)
 	{
-		$url = parse_ini_file($req->getUri()->getBasePath()."/conf/network.ini");
-		$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
-		
-		if($content != false)
+		function get_http_response_code($url)
 		{
-			$categories = json_decode($content);
-			return (new \quizzbox\view\quizzboxview($categories))->render('networkCategories', $req, $resp, $args);
+			$headers = get_headers($url);
+			return substr($headers[0], 9, 3);
+		}
+		
+		$url = parse_ini_file("conf/network.ini");
+		
+		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		{
+			$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
+			
+			if($content != false)
+			{
+				$categories = json_decode($content);
+				return (new \quizzbox\view\quizzboxview($categories))->render('networkCategories', $req, $resp, $args);
+			}
+			else
+			{
+				$_SESSION["message"] = 'Impossible de récupérer les catégories de quizz sur le réseau Quizzbox Network';
+				return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+			}
 		}
 		else
 		{
@@ -149,25 +164,40 @@ class quizzboxcontrol
 	
 	public function networkQuizz(Request $req, Response $resp, $args)
 	{
-		$url = parse_ini_file($req->getUri()->getBasePath()."/conf/network.ini");
-		$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
-		
-		if($content != false)
+		function get_http_response_code($url)
 		{
-			if($content != "[]")
+			$headers = get_headers($url);
+			return substr($headers[0], 9, 3);
+		}
+		
+		$url = parse_ini_file("conf/network.ini");
+		
+		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		{
+			$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
+			
+			if($content != false)
 			{
-				$quizz = json_decode($content);
-				return (new \quizzbox\view\quizzboxview($quizz))->render('networkQuizz', $req, $resp, $args);
+				if($content != "[]")
+				{
+					$quizz = json_decode($content);
+					return (new \quizzbox\view\quizzboxview($quizz))->render('networkQuizz', $req, $resp, $args);
+				}
+				else
+				{
+					$_SESSION["message"] = 'Aucun quizz trouvable dans cette catégorie';
+					return (new \quizzbox\control\quizzboxcontrol($this))->networkCategories($req, $resp, $args);
+				}
 			}
 			else
 			{
-				$_SESSION["message"] = 'Aucun quizz trouvable dans cette catégorie';
-				return (new \quizzbox\control\quizzboxcontrol($this))->networkCategories($req, $resp, $args);
+				$_SESSION["message"] = 'Impossible de récupérer les quizz sur le réseau Quizzbox Network';
+				return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 			}
 		}
 		else
 		{
-			$_SESSION["message"] = 'Impossible de récupérer les quizz sur le réseau Quizzbox Network';
+			$_SESSION["message"] = 'Impossible de récupérer les catégories de quizz sur le réseau Quizzbox Network';
 			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 	}
@@ -180,11 +210,14 @@ class quizzboxcontrol
 		
 		$erreur = false;
 		
+		//var_dump($json);
+		
+		$quizz = new \quizzbox\model\quizz();
+		
 		if(isset($json->quizz))
 		{
 			if(isset($json->quizz->nom))
 			{
-				$quizz = new \quizzbox\model\quizz();
 				$quizz->nom = $json->quizz->nom;
 				if(isset($json->quizz->tokenWeb))
 				{
@@ -269,18 +302,21 @@ class quizzboxcontrol
 		
 		if($erreur == true)
 		{
-			\quizzbox\model\reponse::where('id_quizz', $quizz->id)->delete();
-			\quizzbox\model\question::where('id_quizz', $quizz->id)->delete();
-			\quizzbox\model\quizz::find($quizz->id)->scores()->detach();
-			\quizzbox\model\quizz::destroy($quizz->id);
+			if(isset($quizz->id))
+			{
+				\quizzbox\model\reponse::where('id_quizz', $quizz->id)->delete();
+				\quizzbox\model\question::where('id_quizz', $quizz->id)->delete();
+				\quizzbox\model\quizz::find($quizz->id)->scores()->detach();
+				\quizzbox\model\quizz::destroy($quizz->id);
+			}
 			
 			$_SESSION["message"] = 'Erreur lors de l\'installation du quizz';
-			return (new \quizzbox\control\quizzboxcontrol($this))->network($req, $resp, $args);
+			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 		else
 		{
 			$_SESSION["message"] = 'Quizz installé avec succès !';
-			return (new \quizzbox\control\quizzboxcontrol($this))->network($req, $resp, $args);
+			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 	}
 	
@@ -288,20 +324,120 @@ class quizzboxcontrol
 	{
 		// ID = Token
 		
-		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		$url = parse_ini_file($req->getUri()->getBasePath()."/conf/network.ini");
-		$content = file_get_contents($url["url"].'/quizz/'.$id.'/install', FILE_USE_INCLUDE_PATH);
-		
-		if($content != false)
+		function get_http_response_code($url)
 		{
-			$quizz = json_decode($content);
+			$headers = get_headers($url);
+			return substr($headers[0], 9, 3);
+		}
+		
+		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$url = parse_ini_file("conf/network.ini");
+		
+		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		{
+			$content = file_get_contents($url["url"].'/quizz/'.$id.'/install', FILE_USE_INCLUDE_PATH);
 			
-			return (new \quizzbox\control\quizzboxcontrol($this))->installQuizzJson($quizz, $req, $resp, $args);
+			if($content != false)
+			{
+				$quizz = json_decode($content);
+				
+				return (new \quizzbox\control\quizzboxcontrol($this))->installQuizzJson($quizz, $req, $resp, $args);
+			}
+			else
+			{
+				$_SESSION["message"] = 'Impossible de récupérer le quizz sur le réseau Quizzbox Network';
+				return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+			}
 		}
 		else
 		{
-			$_SESSION["message"] = 'Impossible de récupérer le quizz sur le réseau Quizzbox Network';
+			$_SESSION["message"] = 'Impossible de récupérer les catégories de quizz sur le réseau Quizzbox Network';
 			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
+	}
+	
+	public function formUploadQuizz(Request $req, Response $resp, $args)
+	{
+		return (new \quizzbox\view\quizzboxview($this))->render('formUploadQuizz', $req, $resp, $args);
+	}
+	
+	public function uploadInstallQuizz(Request $req, Response $resp, $args)
+	{
+		// Formulaire d'upload
+		
+		if(isset($_FILES['quizz']))
+		{
+			$dossier = 'upload/';
+			$fichier = basename($_FILES['quizz']['name']);
+			$taille_maxi = 2 * 1000000; // En octets (ici 2 Mo)
+			$taille = filesize($_FILES['quizz']['tmp_name']);
+			$extensions = array('.quizz', '.qzz');
+			$extension = strrchr($_FILES['quizz']['name'], '.'); 
+			
+			// Vérification de l'extension
+			if(!in_array($extension, $extensions))
+			{
+				$_SESSION["message"] = 'Extension de fichier non-autorisée.';
+				return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+			}
+			else
+			{
+				if($taille > $taille_maxi)
+				{
+					$_SESSION["message"] = 'Le fichier est trop volumineux.';
+					return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+				}
+				else
+				{
+					if(move_uploaded_file($_FILES['quizz']['tmp_name'], $dossier . $fichier))
+					{
+						// Traitement du fichier de quizz uploadé
+						$contenu = file_get_contents("http://".$_SERVER["SERVER_NAME"].$req->getUri()->getBasePath()."/".$dossier.$fichier);
+						
+						$decrypt = base64_decode($contenu);
+						if($decrypt != false)
+						{
+							// Décryptage réussi
+							$json = json_decode($decrypt);
+							if($json != false)
+							{
+								// Encodage JSON réussi
+								return (new \quizzbox\control\quizzboxcontrol($this))->installQuizzJson($json, $req, $resp, $args);
+							}
+							else
+							{
+								// Erreur JSON
+								$_SESSION["message"] = 'Une erreur est survenue durant la lecture du fichier.';
+								return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+							}
+						}
+						else
+						{
+							// Erreur de lecture
+							$_SESSION["message"] = 'Une erreur est survenue durant la lecture du fichier.';
+							return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+						}
+						
+						// Suppression du fichier uploadé.
+						chmod($dossier.$fichier, 0777);
+						@unlink($dossier.$fichier);
+					}
+					else
+					{
+						$_SESSION["message"] = 'Une erreur est survenue durant l\'upload.';
+						return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+					}
+				}
+			}
+		}
+		else
+		{
+			return (new \quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
+		}
+	}
+	
+	public function test(Request $req, Response $resp, $args)
+	{
+		echo file_get_contents("conf/network.ini");
 	}
 }

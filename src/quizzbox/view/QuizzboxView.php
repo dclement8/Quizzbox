@@ -32,7 +32,7 @@ class quizzboxview
 				<a href='".$this->baseURL."'>Accueil</a>
 			</li>
 			<li>
-				<a href='".$this->baseURL."/upload'>Installer un quizz depuis un fichier</a>
+				<a href='".$this->baseURL."/uploadQuizz'>Installer un quizz depuis un fichier</a>
 			</li>
 		";
 		
@@ -374,6 +374,19 @@ EOT;
 			";
 		}
 		$html .= "</ul>";
+
+		return $html;
+	}
+	
+	private function formUploadQuizz($req, $resp, $args)
+	{
+		$html = "
+			<form method='post' action='".$this->baseURL."/uploadQuizz' enctype='multipart/form-data'>
+				<label for='quizz'>Importer votre fichier de quizz :</label> 
+				<input type='file' name='quizz' id='quizz' required />
+				<button type='submit' name='uploader'>Installer le quizz</button>
+			</form>
+		";
 
 		return $html;
 	}
