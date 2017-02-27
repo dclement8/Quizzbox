@@ -45,7 +45,7 @@ class quizzboxview
 			
 			$html .= "
 			<li>
-				<a href='".$this->baseURL."/download'>Télécharger des quizz</a>
+				<a href='".$this->baseURL."/network'>Télécharger des quizz</a>
 			</li>
 			";
 		}
@@ -188,7 +188,7 @@ class quizzboxview
 		return $difficulte;
 	}
 	
-    private function afficherCategories($req, $resp, $args)
+    /*private function afficherCategories($req, $resp, $args)
 	{
 		$html = "<ul class='elements'>";
 		foreach($this->data as $uneCategorie)
@@ -215,7 +215,7 @@ class quizzboxview
 		$html .= "</ul>";
 
 		return $html;
-	}
+	}*/
 
 	private function afficherQuizz($req, $resp, $args)
 	{
@@ -306,6 +306,74 @@ EOT;
 	private function rechercher($req, $resp, $args)
 	{
 		$html = $this->afficherQuizz($req, $resp, $args);
+
+		return $html;
+	}
+	
+	private function networkCategories($req, $resp, $args)
+	{
+		$html = "<ul class='elements'>";
+		foreach($this->data as $uneCategorie)
+		{
+			$html .= "
+				<li class='block'>
+					<h1>
+						".$uneCategorie->nom."
+					</h1>
+					<p>
+						<b>Description : </b>
+						".$uneCategorie->description."
+					</p>
+					<p>
+						<b>Nombre de quizz : </b>
+						".\quizzbox\model\quizz::where('id_categorie', $uneCategorie->id)->count()."
+					</p>
+					<a class='button' href='".$this->baseURL."/network/categories/".$uneCategorie->id."'>
+						Consulter les quizz
+					</a>
+				</li>
+			";
+		}
+		$html .= "</ul>";
+
+		return $html;
+	}
+	
+	private function networkQuizz($req, $resp, $args)
+	{
+		$url = parse_ini_file($req->getUri()->getBasePath()."/conf/network.ini");
+		
+		$html = "<p>".count($this->data)." quizz trouvé(s)</p>";
+		$html .= "<ul class='elements'>";
+		foreach($this->data as $unQuizz)
+		{
+			$html .= "
+				<li class='block'>
+					<h1>
+						".$unQuizz->nom."
+					</h1>
+					<p>
+						<b>Détails :</b>
+						<ul>
+							<li>
+								<b>Nombre de questions : </b>
+								".file_get_contents($url["url"].'/quizz/'.$unQuizz->id.'/nbQuestions', FILE_USE_INCLUDE_PATH)."
+							</li>
+							<li>
+								<b>Difficulté évaluée : </b>
+								".$this->calculDifficulteQuizz($unQuizz)."
+							</li>
+							<li>
+								<form method='post' action='".$this->baseURL."/network/quizz/{id}/".$unQuizz->token."/install'>
+									<button type='submit'>Installer le quizz</button>
+								</form>
+							</li>
+						</ul>
+					</p>
+				</li>
+			";
+		}
+		$html .= "</ul>";
 
 		return $html;
 	}

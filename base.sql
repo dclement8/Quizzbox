@@ -11,7 +11,6 @@ CREATE TABLE quizz(
         id           int (11) Auto_increment  NOT NULL ,
         nom          Varchar (255) ,
         tokenWeb     Varchar (500) ,
-        id_categorie Int ,
         PRIMARY KEY (id ) ,
         UNIQUE (tokenWeb )
 )ENGINE=InnoDB;
@@ -30,24 +29,12 @@ CREATE TABLE joueur(
 
 
 #------------------------------------------------------------
-# Table: categorie
-#------------------------------------------------------------
-
-CREATE TABLE categorie(
-        id          int (11) Auto_increment  NOT NULL ,
-        nom         Varchar (255) ,
-        description Varchar (500) ,
-        PRIMARY KEY (id )
-)ENGINE=InnoDB;
-
-
-#------------------------------------------------------------
 # Table: question
 #------------------------------------------------------------
 
 CREATE TABLE question(
         id          int (11) Auto_increment  NOT NULL ,
-        ennonce     Varchar (255) ,
+        enonce     Varchar (255) ,
         coefficient Int ,
         id_quizz    Int NOT NULL ,
         PRIMARY KEY (id ,id_quizz )
@@ -81,7 +68,6 @@ CREATE TABLE scores(
         PRIMARY KEY (id_joueur ,id_quizz )
 )ENGINE=InnoDB;
 
-ALTER TABLE quizz ADD CONSTRAINT FK_quizz_id_categorie FOREIGN KEY (id_categorie) REFERENCES categorie(id);
 ALTER TABLE question ADD CONSTRAINT FK_question_id_quizz FOREIGN KEY (id_quizz) REFERENCES quizz(id);
 ALTER TABLE reponse ADD CONSTRAINT FK_reponse_id_question FOREIGN KEY (id_question) REFERENCES question(id);
 ALTER TABLE reponse ADD CONSTRAINT FK_reponse_id_quizz FOREIGN KEY (id_quizz) REFERENCES quizz(id);

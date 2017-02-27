@@ -29,9 +29,9 @@ $app->get('/', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 })->setName('accueil');
 
-$app->get('/categories', function (Request $req, Response $resp, $args) {
+/*$app->get('/categories', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->afficherCategories($req, $resp, $args);
-})->setName('afficherCategories');
+})->setName('afficherCategories');*/
 
 $app->get('/categories/{id}', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->afficherQuizz($req, $resp, $args);
@@ -52,5 +52,21 @@ $app->get('/recherche', function (Request $req, Response $resp, $args) {
 $app->post('/quizz/{id}/supprimer', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->supprimerQuizz($req, $resp, $args);
 })->setName('supprimerQuizz')->add(new quizzbox\utils\authentificationAdmin());
+
+$app->get('/network', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->network($req, $resp, $args);
+})->setName('network')->add(new quizzbox\utils\internet());
+
+$app->get('/network/categories', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->networkCategories($req, $resp, $args);
+})->setName('networkCategories')->add(new quizzbox\utils\internet());
+
+$app->get('/network/categories/{id}', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->networkQuizz($req, $resp, $args);
+})->setName('networkQuizz')->add(new quizzbox\utils\internet());
+
+$app->get('/network/quizz/{id}/install', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->networkInstallQuizz($req, $resp, $args);
+})->setName('networkInstallQuizz')->add(new quizzbox\utils\internet());
 
 $app->run();
