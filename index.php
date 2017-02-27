@@ -77,8 +77,8 @@ $app->post('/uploadQuizz', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->uploadInstallQuizz($req, $resp, $args);
 })->setName('uploadQuizz');
 
-$app->get('/test', function (Request $req, Response $resp, $args) {
-	return (new quizzbox\control\quizzboxcontrol($this))->test($req, $resp, $args);
-})->setName('test');
+$app->put('/quizz/joueur/{joueur}/scores/{score}', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->envoiScore($req, $resp, $args);
+})->setName('envoiScore');
 
 $app->run();

@@ -436,8 +436,36 @@ class quizzboxcontrol
 		}
 	}
 	
-	public function test(Request $req, Response $resp, $args)
+	public function envoiScore(Request $req, Response $resp, $args)
 	{
-		echo file_get_contents("conf/network.ini");
+		// On authentifie le joueur par son pseudo dans l'URL uniquement
+		
+		$joueur = filter_var($args['joueur'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+		$score = filter_var($args['score'], FILTER_SANITIZE_NUMBER_INT);
+
+		$args['id'] = filter_var($jsonClient->quizz->tokenWeb, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+		if(\quizzbox\model\quizz::where('tokenWeb', $args['id'])->get()->toJson() != "[]")
+		{
+			// Créer joueur
+			$lejoueur = new \quizzbox\model\joueur();
+			$lejoueur->pseudo = $joueur;
+			$lejoueur->save();
+			
+			$scores = \quizzbox\model\quizz::where('tokenWeb', $id)->scores()->where("id_joueur", $lejoueur->id)->first();
+			$scores->pivot->score = $score;
+			$scores->save();
+
+			$arr = array('success' => 'Score ajouté avec succès.');
+			$resp = $resp->withStatus(201);
+			return (new \quizzbox\view\quizzboxview($arr))->envoiScore($req, $resp, $args);
+		}
+		else
+		{
+			$arr = array('error' => 'Le quizz est introuvable sur le serveur.');
+			$resp = $resp->withStatus(404);
+			return (new \quizzbox\view\quizzboxview($arr))->envoiScore($req, $resp, $args);
+		}
 	}
 }

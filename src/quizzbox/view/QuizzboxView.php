@@ -391,6 +391,25 @@ EOT;
 		return $html;
 	}
 	
+	public function envoiScore($req, $resp, $args)
+	{
+		$json = "";
+
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+
+		$resp->withHeader('Access-Control-Allow-Origin', '*')->getBody()->write($json);
+		return $resp;
+	}
+	
 	
 	// -----------
 	
