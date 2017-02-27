@@ -240,7 +240,7 @@ class quizzboxview
 								".$this->calculDifficulteQuizz($unQuizz)."
 							</li>
 							<li>
-								<form method='get' action='".$this->baseURL."/jouer/".$unQuizz->id.">
+								<form method='get' action='".$this->baseURL."/jouer/".$unQuizz->id."'>
 									<button type='submit'>Jouer au quizz</button>
 								</form>
 							</li>
