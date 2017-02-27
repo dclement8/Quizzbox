@@ -81,4 +81,8 @@ $app->put('/quizz/joueur/{joueur}/scores/{score}', function (Request $req, Respo
 	return (new quizzbox\control\quizzboxcontrol($this))->envoiScore($req, $resp, $args);
 })->setName('envoiScore');
 
+$app->get('/quizz/{id}', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->getQuizzJSON($req, $resp, $args);
+})->setName('getQuizzJSON');
+
 $app->run();

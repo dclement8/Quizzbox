@@ -468,4 +468,66 @@ class quizzboxcontrol
 			return (new \quizzbox\view\quizzboxview($arr))->envoiScore($req, $resp, $args);
 		}
 	}
+	
+	public function getQuizz(Request $req, Response $resp, $args)
+	{
+		// Retourne une représentation JSON du Quizz passé en paramètre (via le token).
+
+		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS); // ID = Token
+		if(\quizzbox\model\quizz::where('tokenWeb', $id)->get()->toJson() != "[]")
+		{
+			$quizz = \quizzbox\model\quizz::where('tokenWeb', $id)->first();
+			$idQuizz = $quizz->id;
+			$questions = \quizzbox\model\question::where('id_quizz', $idQuizz)->get();
+
+			$jsonQuestion = '[ ';
+			foreach($questions as $uneQuestion)
+			{
+				$jsonQuestion .= '{ "enonce" : "'.str_replace('"', '\"', $uneQuestion->enonce).'" , "coefficient" : '.$uneQuestion->coefficient.' , "reponses" : [ ';
+
+				$reponses = \quizzbox\model\reponse::where('id_quizz', $idQuizz)->where('id_question', $uneQuestion->id)->get();
+				$i = 1;
+				foreach($reponses as $uneReponse)
+				{
+					$jsonQuestion .= ' { "nom" : "'.str_replace("'", "\'", $uneReponse->nom).'" , "estSolution" : '.$uneReponse->estSolution.' } ';
+					if($i != count($reponses))
+					{
+						$jsonQuestion .= ', ';
+					}
+					$i++;
+				}
+				$jsonQuestion .= ' ] }';
+			}
+			$jsonQuestion .= ' ] }';
+
+			$jsonQuizz = '{ "nom" : "'.str_replace('"', '\"', $quizz->nom).'" , "tokenWeb" : "'.$quizz->tokenWeb.'"';
+
+			$json = '{ "quizz" : '.$jsonQuizz.' , "questions" : '.$jsonQuestion.' }';
+			return $json;
+		}
+		else
+		{
+			/* Oups ! . */
+			return null;
+		}
+	}
+	
+	public function getQuizzJSON(Request $req, Response $resp, $args)
+	{
+		$json = (new \quizzbox\control\quizzboxcontrol($this))->getQuizz($req, $resp, $args);
+
+		if($json == null)
+		{
+			$arr = array('error' => 'quizz introuvable !');
+			$resp = $resp->withStatus(404);
+			return (new \quizzbox\view\quizzboxview($arr))->getQuizzJSON($req, $resp, $args);
+		}
+        elseif(isset($args['without_headers'])) {
+            return $json;
+        }
+		else
+		{
+			return (new \quizzbox\view\quizzboxview($json))->getQuizzJSON($req, $resp, $args);
+		}
+	}
 }
