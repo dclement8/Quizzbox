@@ -364,7 +364,7 @@ EOT;
 								".$this->calculDifficulteQuizz($unQuizz)."
 							</li>
 							<li>
-								<form method='post' action='".$this->baseURL."/network/quizz/{id}/".$unQuizz->token."/install'>
+								<form method='post' action='".$this->baseURL."/network/quizz/".$unQuizz->token."/install'>
 									<button type='submit'>Installer le quizz</button>
 								</form>
 							</li>
@@ -427,6 +427,17 @@ EOT;
 
 		$resp->withHeader('Access-Control-Allow-Origin', '*')->getBody()->write($json);
 		return $resp;
+	}
+	
+	public function jouer($req, $resp, $args)
+	{
+		$html = "
+			<div id='jeuFrame'>
+				<iframe src='".$this->baseURL."/jeu?quizz=".$this->data."'></iframe>
+			</div>
+		";
+		
+		return $html;
 	}
 	
 	

@@ -530,4 +530,19 @@ class quizzboxcontrol
 			return (new \quizzbox\view\quizzboxview($json))->getQuizzJSON($req, $resp, $args);
 		}
 	}
+	
+	public function jouer(Request $req, Response $resp, $args)
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		
+		if(\quizzbox\model\quizz::where('id', $id)->get()->toJson() != "[]")
+		{
+			return (new \quizzbox\view\quizzboxview($id))->render('jouer', $req, $resp, $args);
+		}
+		else
+		{
+			$_SESSION["message"] = 'Quizz introuvable';
+			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+		}
+	}
 }

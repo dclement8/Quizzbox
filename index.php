@@ -85,4 +85,8 @@ $app->get('/quizz/{id}', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->getQuizzJSON($req, $resp, $args);
 })->setName('getQuizzJSON');
 
+$app->get('/jouer/{id}', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->jouer($req, $resp, $args);
+})->setName('jouer');
+
 $app->run();
