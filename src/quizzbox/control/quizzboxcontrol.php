@@ -164,7 +164,7 @@ class quizzboxcontrol
 	
 	public function networkQuizz(Request $req, Response $resp, $args)
 	{
-		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		
 		function get_http_response_code($url)
 		{
