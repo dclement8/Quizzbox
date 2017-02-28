@@ -164,6 +164,8 @@ class quizzboxcontrol
 	
 	public function networkQuizz(Request $req, Response $resp, $args)
 	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		
 		function get_http_response_code($url)
 		{
 			$headers = get_headers($url);
@@ -172,9 +174,9 @@ class quizzboxcontrol
 		
 		$url = parse_ini_file("conf/network.ini");
 		
-		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		if(get_http_response_code($url["url"].'/categories/'.$id.'/json') == "200")
 		{
-			$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
+			$content = file_get_contents($url["url"].'/categories/'.$id.'/json', FILE_USE_INCLUDE_PATH);
 			
 			if($content != false)
 			{
@@ -205,8 +207,6 @@ class quizzboxcontrol
 	public function installQuizzJson($json, Request $req, Response $resp, $args)
 	{
 		// OSEF de la catégorie
-		
-		// { "quizz" : {"id":1,"nom":"Sur les risques industriels li\u00e9s au net .","tokenWeb":"174086","id_categorie":1} , "questions" : [  ] }
 		
 		$erreur = false;
 		
@@ -333,7 +333,7 @@ class quizzboxcontrol
 		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$url = parse_ini_file("conf/network.ini");
 		
-		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		if(get_http_response_code($url["url"].'/quizz/'.$id.'/install') == "200")
 		{
 			$content = file_get_contents($url["url"].'/quizz/'.$id.'/install', FILE_USE_INCLUDE_PATH);
 			

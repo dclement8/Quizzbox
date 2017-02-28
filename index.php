@@ -33,9 +33,9 @@ $app->get('/', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->afficherCategories($req, $resp, $args);
 })->setName('afficherCategories');*/
 
-$app->get('/categories/{id}', function (Request $req, Response $resp, $args) {
+/*$app->get('/categories/{id}', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->afficherQuizz($req, $resp, $args);
-})->setName('afficherQuizz');
+})->setName('afficherQuizz');*/
 
 $app->get('/admin', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->connexionFormAdmin($req, $resp, $args);
