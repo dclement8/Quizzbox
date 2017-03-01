@@ -11,6 +11,7 @@ function($scope, $http, $location) {
 	$scope.timer = 0; // Timer affiché
 	$scope.passerQuestion = false; // Stocke le timout
 	$scope.horloge = false; // Stock le setInterval du timer
+	$scope.confNetwork = ""; // URL vers le serveur Quizzbox Network
 
 	var storageAvailable = function(type)
 	{
@@ -84,22 +85,23 @@ function($scope, $http, $location) {
 		
 		if(document.getElementById("pseudoLocal") != undefined)
 		{
-			if(document.getElementById("pseudoLocal") == "")
+			if(document.getElementById("pseudoLocal").value == "")
 			{
 				pseudo = "Anonyme";
 			}
 			else
 			{
-				pseudo = document.getElementById("pseudoLocal");
+				pseudo = document.getElementById("pseudoLocal").value;
 			}
 		}
 		
-		$http.put("quizz/joueur/" + pseudo + "/scores/" + $scope.score).then(function(response) {
+		$http.put("quizz/" + $scope.quizz.quizz.tokenWeb + "/joueur/" + pseudo + "/scores/" + $scope.score).then(function(response) {
 			console.log(response.data);
 			
 			if(response.status == 201)
 			{
 				showMsg("Score envoyé !", "rgba(0,0,128,0.9)", 5000);
+				$scope.continuer();
 			}
 			else
 			{
@@ -112,6 +114,63 @@ function($scope, $http, $location) {
 		});
 	};
 	
+	// Envoyer le score en ligne
+	$scope.envoiScoreNetwork = function()
+	{
+		if(document.getElementById("pseudoNetwork") != undefined)
+		{
+			if(document.getElementById("pseudoNetwork") != "")
+			{
+				if(document.getElementById("mdpNetwork") != undefined)
+				{
+					if(document.getElementById("mdpNetwork") != "")
+					{
+						$http.put($scope.confNetwork + "quizz/joueur/" + document.getElementById("pseudoNetwork") + "@" + Sha256.hash(document.getElementById("mdpNetwork")) + "/scores/" + $scope.score, JSON.stringify($scope.quizz)).then(function(response)
+						{
+							if(response.status == 201)
+							{
+								showMsg("Score envoyé !", "rgba(0,0,128,0.9)", 5000);
+								$scope.continuer();
+							}
+							else
+							{
+								showMsg("Erreur lors de l'envoi du score", "rgba(213,85,0,0.9)", 5000);
+							}
+						},
+						function(error) {
+							console.log(error);
+							showMsg("Impossible d'inscrire votre score !", "rgba(213,85,0,0.9)", 5000);
+						});
+					}
+					else
+					{
+						showMsg("Vous devez renseigner un mot de passe !", "rgba(213,85,0,0.9)", 5000);
+					}
+				}
+				else
+				{
+					showMsg("Vous devez renseigner un mot de passe !", "rgba(213,85,0,0.9)", 5000);
+				}
+			}
+			else
+			{
+				showMsg("Vous devez renseigner un pseudo !", "rgba(213,85,0,0.9)", 5000);
+			}
+		}
+		else
+		{
+			showMsg("Vous devez renseigner un pseudo !", "rgba(213,85,0,0.9)", 5000);
+		}
+	};
+	
+	// Continuer : pas d'envoi du score
+	$scope.continuer = function()
+	{
+		localStorage.removeItem("mode");
+		$location.path('/');
+	}
+	
+	// Fonction qui décrémente l'horloge/timer
 	$scope.afficherTemps = function()
 	{
 		if($scope.timer > 0)
@@ -120,15 +179,35 @@ function($scope, $http, $location) {
 			$("#jeuTimer").html($scope.timer);
 		}
 	}
-
+	
+	// Fin de jeu
+	$scope.fin = function()
+	{
+		if($scope.finJeu == true)
+		{
+			console.log("Fin de jeu");
+			$location.path('/finJeu');
+			
+			//$("#jeuNom").html($scope.quizz.quizz.nom);
+			//$("#leScore").html($scope.score);
+		}
+	}
+	
+	// Fonction qui se déclanche après le temps imparti
 	$scope.tropTard = function()
 	{
 		$scope.question++;
 			
 		if($scope.quizz.quizz.questions[$scope.question] == null)
 		{
+			$("#jeuTimer").html("0");
 			console.log("Partie terminée");
+			
+			clearTimeout($scope.passerQuestion);
+			clearInterval($scope.horloge);
+			
 			$scope.finJeu = true;
+			$scope.fin();
 		}
 		else
 		{
@@ -136,26 +215,7 @@ function($scope, $http, $location) {
 		}
 	}
 	
-	$scope.fin = function()
-	{
-		if($scope.finJeu == true)
-		{
-			var hudFin = "";
-			
-			hudFin += "<div id='jeuNom'>" + $scope.quizz.quizz.nom + "</div>";
-			
-			hudFin += "<p id='scoreFinal'>Votre score final : " + $scope.score + "</p>";
-			
-			hudFin += "<div><h2>Envoyer votre score sur Quizzbox Network (connexion Internet requise)</h2><label for='pseudoNetwork'>Pseudo</label><input type='text' id='pseudoNetwork' name='pseudoNetwork'/><label for='mdpNetwork'>Mot de passe</label><input type='password' id='mdpNetwork' name='mdpNetwork'/><button ng-click='envoiScoreNetwork()'>Envoyer</button></div>";
-			
-			hudFin += "<div><h2>Envoyer votre score en local sur la Quizzbox</h2><label for='pseudoLocal'>Entrez un pseudo</label><input type='text' id='pseudoLocal' name='pseudoLocal'/><button ng-click='envoiScoreLocal()'>Envoyer</button></div>";
-			
-			hudFin += "<div><button ng-click='continuer()'>Ne pas envoyer</button></div>";
-			
-			$("#jeu").html(hudFin);
-		}
-	}
-	
+	// Afficher la question
 	$scope.afficherQuestion = function()
 	{
 		console.log($scope.quizz);
@@ -173,7 +233,8 @@ function($scope, $http, $location) {
 		$scope.timestamp = Math.floor(Date.now() / 1000);
 		
 		// Timer pour passer à la question suivante
-		$scope.passerQuestion = setTimeout($scope.tropTard, (($scope.tempsReponse * 1000) / $scope.quizz.quizz.questions[$scope.question].coefficient))
+		$("#jeuTimer").html(($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient));
+		$scope.passerQuestion = setTimeout($scope.tropTard, (($scope.tempsReponse * 1000) / $scope.quizz.quizz.questions[$scope.question].coefficient));
 		$scope.timer = ($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient);
 		$scope.horloge = setInterval($scope.afficherTemps, 1000);
 	}
@@ -257,49 +318,71 @@ function($scope, $http, $location) {
 	};
 
 	/* Initialisation */
-	if(!localStorage.getItem('mode'))
+	if($scope.finJeu == false)
 	{
-		// Redirection
-		$location.path('/');
-	}
-	else
-	{
-		// Récupère le token du quizz passé en paramètre dans l'URL
-		var tokenQuizz = getParamURL.quizz;
-		
-		if(tokenQuizz != "undefined")
+		if(!localStorage.getItem('mode'))
 		{
-			// Récupère les données du quizz
-			$http.get("quizz/" + tokenQuizz).then(function(response)
-			{
-				if(response.status == 200)
-				{
-					console.log("Partie en cours");
-					$scope.quizz = response.data;
-
-					$scope.score = 0;
-					$scope.question = 0;
-					$scope.finJeu = false;
-					
-					$("#jeuNom").html($scope.quizz.quizz.nom);
-					
-					// Afficher la première question
-					$scope.afficherQuestion();
-				}
-				else
-				{
-					$location.path('/');
-				}
-				
-			},
-			function(error) {
-				console.log(error);
-				$location.path('/');
-			});
+			// Redirection
+			$location.path('/');
 		}
 		else
 		{
-			$location.path('/');
+			// Récupère le token du quizz passé en paramètre dans l'URL
+			var tokenQuizz = getParamURL.quizz;
+			
+			if(tokenQuizz != "undefined")
+			{
+				// Récupère les données du quizz
+				$http.get("quizz/" + tokenQuizz).then(function(response)
+				{
+					if(response.status == 200)
+					{
+						$http.get("conf/network.ini").then(function(response2)
+						{
+							if(response.status == 200)
+							{
+								//console.log(response.data.split('"'));
+								$scope.confNetwork = response2.data.split('"')[1];
+								
+								console.log("Partie en cours");
+								$scope.quizz = response.data;
+
+								$scope.score = 0;
+								$scope.question = 0;
+								$scope.finJeu = false;
+								
+								$("#jeuNom").html($scope.quizz.quizz.nom);
+								
+								// Afficher la première question
+								$scope.afficherQuestion();
+							}
+							else
+							{
+								$location.path('/');
+							}
+						},
+						function(error) {
+							console.log(error);
+							$location.path('/');
+						});
+					}
+					else
+					{
+						$location.path('/');
+					}
+					
+				},
+				function(error) {
+					console.log(error);
+					$location.path('/');
+				});
+			}
+			else
+			{
+				$location.path('/');
+			}
 		}
 	}
+	
+	
 }]);

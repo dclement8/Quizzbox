@@ -12,6 +12,10 @@ app.config(['$locationProvider', '$routeProvider', function config($locationProv
             templateUrl: "html/jeu.html",
             controller: "quizzController"
         }).
+		when('/finJeu', {
+            templateUrl: "html/finJeu.html",
+            controller: "quizzController"
+        }).
         otherwise({redirectTo: '/'});
     }
 ]);

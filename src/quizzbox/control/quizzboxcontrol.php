@@ -444,18 +444,33 @@ class quizzboxcontrol
 
 		$score = filter_var($args['score'], FILTER_SANITIZE_NUMBER_INT);
 
-		$args['id'] = filter_var($jsonClient->quizz->tokenWeb, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$token = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-		if(\quizzbox\model\quizz::where('tokenWeb', $args['id'])->get()->toJson() != "[]")
+		if(\quizzbox\model\quizz::where('tokenWeb', $token)->get()->toJson() != "[]")
 		{
 			// Créer joueur
 			$lejoueur = new \quizzbox\model\joueur();
 			$lejoueur->pseudo = $joueur;
 			$lejoueur->save();
 			
-			$scores = \quizzbox\model\quizz::where('tokenWeb', $id)->scores()->where("id_joueur", $lejoueur->id)->first();
-			$scores->pivot->score = $score;
-			$scores->save();
+			$quizz = \quizzbox\model\quizz::where('tokenWeb', $token)->first();
+			
+			$config = parse_ini_file("conf/config.ini");
+			$dsn = "mysql:host=".$config["host"].";dbname=".$config["database"];
+			$db = new \PDO($dsn, $config["username"], $config["password"]);
+			$db->query("SET CHARACTER SET utf8");
+			
+			$insert = "INSERT INTO scores VALUES(:score, CURRENT_DATE(), NULL, :joueur, :quizz)";
+			$insert_prep = $db->prepare($insert);
+			
+			$idJoueur = $lejoueur->id;
+			$idQuizz = $quizz->id;
+			
+			$insert_prep->bindParam(':score', $score, \PDO::PARAM_INT);
+			$insert_prep->bindParam(':joueur', $idJoueur, \PDO::PARAM_INT);
+			$insert_prep->bindParam(':quizz', $idQuizz, \PDO::PARAM_INT);
+			
+			$insert_prep->execute();
 
 			$arr = array('success' => 'Score ajouté avec succès.');
 			$resp = $resp->withStatus(201);

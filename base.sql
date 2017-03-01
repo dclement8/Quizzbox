@@ -23,8 +23,7 @@ CREATE TABLE quizz(
 CREATE TABLE joueur(
         id         int (11) Auto_increment  NOT NULL ,
         pseudo     Varchar (255) ,
-        PRIMARY KEY (id ) ,
-        UNIQUE (pseudo )
+        PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
 
