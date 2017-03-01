@@ -12,6 +12,7 @@ function($scope, $http, $location) {
 	$scope.passerQuestion = false; // Stocke le timout
 	$scope.horloge = false; // Stock le setInterval du timer
 	$scope.confNetwork = ""; // URL vers le serveur Quizzbox Network
+	$scope.tempsPasse = 0; // Temps total
 
 	var storageAvailable = function(type)
 	{
@@ -95,7 +96,7 @@ function($scope, $http, $location) {
 			}
 		}
 		
-		$http.put("quizz/" + $scope.quizz.quizz.tokenWeb + "/joueur/" + pseudo + "/scores/" + $scope.score).then(function(response) {
+		$http.put("quizz/" + $scope.quizz.quizz.tokenWeb + "/joueur/" + pseudo + "/scores/" + localStorage.getItem('score')).then(function(response) {
 			console.log(response.data);
 			
 			if(response.status == 201)
@@ -105,7 +106,7 @@ function($scope, $http, $location) {
 			}
 			else
 			{
-				showMsg("Erreur lors de l'envoi du score", "rgba(213,85,0,0.9)", 5000);
+				showMsg("Erreur lors de l'envoi du score" + response.data.error, "rgba(213,85,0,0.9)", 5000);
 			}
 		},
 		function(error) {
@@ -125,7 +126,7 @@ function($scope, $http, $location) {
 				{
 					if(document.getElementById("mdpNetwork").value != "")
 					{
-						$http.put($scope.confNetwork + "/quizz/joueur/" + document.getElementById("pseudoNetwork").value + "@" + Sha256.hash(document.getElementById("mdpNetwork").value) + "/scores/" + $scope.score, JSON.stringify($scope.quizz)).then(function(response)
+						$http.put($scope.confNetwork + "/quizz/joueur/" + document.getElementById("pseudoNetwork").value + "@" + Sha256.hash(document.getElementById("mdpNetwork").value) + "/scores/" + localStorage.getItem('score'), JSON.stringify($scope.quizz)).then(function(response)
 						{
 							if(response.status == 201)
 							{
@@ -134,7 +135,7 @@ function($scope, $http, $location) {
 							}
 							else
 							{
-								showMsg("Erreur lors de l'envoi du score", "rgba(213,85,0,0.9)", 5000);
+								showMsg("Erreur lors de l'envoi du score : " + response.data.error, "rgba(213,85,0,0.9)", 5000);
 							}
 						},
 						function(error) {
@@ -188,12 +189,17 @@ function($scope, $http, $location) {
 			localStorage.removeItem("score");
 			localStorage.setItem('score', $scope.score);
 			
+			if(localStorage.getItem('mode') == "multi")
+			{
+				localStorage.removeItem("temps");
+				localStorage.setItem('temps', $scope.tempsPasse);
+			}
+			
 			console.log("Fin de jeu");
 			$location.path('/finJeu');
 			
 			//$scope.$apply(); // Résoue le bug de la fin de jeu qui ne se charge pas quand on arrive à la dernière question au timeOut.
 			
-			console.log("Afficher le score = " + $scope.score);
 			$("#leScore").html(localStorage.getItem('score'));
 		}
 	}
@@ -216,6 +222,7 @@ function($scope, $http, $location) {
 		}
 		else
 		{
+			$scope.tempsPasse = $scope.tempsPasse + (Math.floor(Date.now() / 1000) - $scope.timestamp);
 			$scope.afficherQuestion();
 		}
 	}
@@ -293,6 +300,8 @@ function($scope, $http, $location) {
 				// Le joueur a fourni la/les bonnes réponses à la question
 				var temps = timeReponse - $scope.timestamp;
 				$scope.score = $scope.score + $scope.quizz.quizz.questions[$scope.question].coefficient;
+				
+				$scope.tempsPasse = $scope.tempsPasse + temps;
 				
 				showMsg("Bonne réponse", "rgba(0,128,0,0.9)", 3000);
 			}
@@ -395,6 +404,11 @@ function($scope, $http, $location) {
 	else
 	{
 		$("#leScore").html(localStorage.getItem('score'));
+		
+		if(localStorage.getItem('mode') == "multi")
+		{
+			$("#tempsFinal").html("Temps de jeu total : " + localStorage.getItem('temps') + " secondes");
+		}
 		
 		var tokenQuizz = getParamURL.quizz;
 				

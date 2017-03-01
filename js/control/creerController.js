@@ -33,4 +33,12 @@ function($scope, $http, $location) {
 		localStorage.setItem('mode', 'solo');
 		$location.path('/jeu');
 	};
+	
+	$scope.partieMulti = function()
+	{
+        // Mode de jeu
+		localStorage.removeItem("mode");
+		localStorage.setItem('mode', 'multi');
+		$location.path('/jeu');
+	};
 }]);
