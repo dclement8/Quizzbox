@@ -119,13 +119,13 @@ function($scope, $http, $location) {
 	{
 		if(document.getElementById("pseudoNetwork") != undefined)
 		{
-			if(document.getElementById("pseudoNetwork") != "")
+			if(document.getElementById("pseudoNetwork").value != "")
 			{
 				if(document.getElementById("mdpNetwork") != undefined)
 				{
-					if(document.getElementById("mdpNetwork") != "")
+					if(document.getElementById("mdpNetwork").value != "")
 					{
-						$http.put($scope.confNetwork + "quizz/joueur/" + document.getElementById("pseudoNetwork") + "@" + Sha256.hash(document.getElementById("mdpNetwork")) + "/scores/" + $scope.score, JSON.stringify($scope.quizz)).then(function(response)
+						$http.put($scope.confNetwork + "/quizz/joueur/" + document.getElementById("pseudoNetwork").value + "@" + Sha256.hash(document.getElementById("mdpNetwork").value) + "/scores/" + $scope.score, JSON.stringify($scope.quizz)).then(function(response)
 						{
 							if(response.status == 201)
 							{
@@ -185,11 +185,16 @@ function($scope, $http, $location) {
 	{
 		if($scope.finJeu == true)
 		{
+			localStorage.removeItem("score");
+			localStorage.setItem('score', $scope.score);
+			
 			console.log("Fin de jeu");
 			$location.path('/finJeu');
 			
-			//$("#jeuNom").html($scope.quizz.quizz.nom);
-			//$("#leScore").html($scope.score);
+			//$scope.$apply(); // Résoue le bug de la fin de jeu qui ne se charge pas quand on arrive à la dernière question au timeOut.
+			
+			console.log("Afficher le score = " + $scope.score);
+			$("#leScore").html(localStorage.getItem('score'));
 		}
 	}
 	
@@ -218,7 +223,7 @@ function($scope, $http, $location) {
 	// Afficher la question
 	$scope.afficherQuestion = function()
 	{
-		console.log($scope.quizz);
+		//console.log($scope.quizz);
 		
 		$("#jeuEnnonce").html($scope.quizz.quizz.questions[$scope.question].enonce);
 		
@@ -316,73 +321,120 @@ function($scope, $http, $location) {
 			showMsg("Vous n'avez pas répondu à la question !", "rgba(213,85,0,0.9)", 3000);
 		}
 	};
-
+	
 	/* Initialisation */
-	if($scope.finJeu == false)
+	if($location.$$path == "/jeu")
 	{
-		if(!localStorage.getItem('mode'))
+		if($scope.finJeu == false)
 		{
-			// Redirection
-			$location.path('/');
-		}
-		else
-		{
-			// Récupère le token du quizz passé en paramètre dans l'URL
-			var tokenQuizz = getParamURL.quizz;
-			
-			if(tokenQuizz != "undefined")
+			if(!localStorage.getItem('mode'))
 			{
-				// Récupère les données du quizz
-				$http.get("quizz/" + tokenQuizz).then(function(response)
-				{
-					if(response.status == 200)
-					{
-						$http.get("conf/network.ini").then(function(response2)
-						{
-							if(response.status == 200)
-							{
-								//console.log(response.data.split('"'));
-								$scope.confNetwork = response2.data.split('"')[1];
-								
-								console.log("Partie en cours");
-								$scope.quizz = response.data;
-
-								$scope.score = 0;
-								$scope.question = 0;
-								$scope.finJeu = false;
-								
-								$("#jeuNom").html($scope.quizz.quizz.nom);
-								
-								// Afficher la première question
-								$scope.afficherQuestion();
-							}
-							else
-							{
-								$location.path('/');
-							}
-						},
-						function(error) {
-							console.log(error);
-							$location.path('/');
-						});
-					}
-					else
-					{
-						$location.path('/');
-					}
-					
-				},
-				function(error) {
-					console.log(error);
-					$location.path('/');
-				});
+				// Redirection
+				$location.path('/');
 			}
 			else
 			{
-				$location.path('/');
+				// Récupère le token du quizz passé en paramètre dans l'URL
+				var tokenQuizz = getParamURL.quizz;
+				
+				if(tokenQuizz != "undefined")
+				{
+					// Récupère les données du quizz
+					$http.get("quizz/" + tokenQuizz).then(function(response)
+					{
+						if(response.status == 200)
+						{
+							$http.get("conf/network.ini").then(function(response2)
+							{
+								if(response2.status == 200)
+								{
+									//console.log(response.data.split('"'));
+									$scope.confNetwork = response2.data.split('"')[1];
+									
+									localStorage.removeItem("score");
+									console.log("Partie en cours");
+									$scope.quizz = response.data;
+
+									$scope.score = 0;
+									$scope.question = 0;
+									$scope.finJeu = false;
+									
+									$("#jeuNom").html($scope.quizz.quizz.nom);
+									
+									// Afficher la première question
+									$scope.afficherQuestion();
+								}
+								else
+								{
+									$location.path('/');
+								}
+							},
+							function(error) {
+								console.log(error);
+								$location.path('/');
+							});
+						}
+						else
+						{
+							$location.path('/');
+						}
+						
+					},
+					function(error) {
+						console.log(error);
+						$location.path('/');
+					});
+				}
+				else
+				{
+					$location.path('/');
+				}
 			}
 		}
 	}
-	
+	else
+	{
+		$("#leScore").html(localStorage.getItem('score'));
+		
+		var tokenQuizz = getParamURL.quizz;
+				
+		if(tokenQuizz != "undefined")
+		{
+			$http.get("quizz/" + tokenQuizz).then(function(response)
+			{
+				if(response.status == 200)
+				{
+					$http.get("conf/network.ini").then(function(response2)
+					{
+						if(response2.status == 200)
+						{
+							$scope.quizz = response.data;
+							$scope.confNetwork = response2.data.split('"')[1];
+						}
+						else
+						{
+							$location.path('/');
+						}
+					},
+					function(error) {
+						console.log(error);
+						$location.path('/');
+					});
+				}
+				else
+				{
+					$location.path('/');
+				}
+			},
+			function(error) {
+				console.log(error);
+				$location.path('/');
+			});
+		}
+		else
+		{
+			$location.path('/');
+		}
+}
 	
 }]);

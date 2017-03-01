@@ -263,9 +263,10 @@ class quizzboxview
 					<h2>Classement des 10 meilleurs joueurs en local :</h2>
 					<table class='classement'>
 						<tr>
-							<th>Position</td>
-							<th>Joueur</td>
-							<th>Score</td>
+							<th>Position</th>
+							<th>Joueur</th>
+							<th>Score</th>
+							<th>Date/heure</th>
 						</tr>
 						";
 
@@ -278,6 +279,7 @@ class quizzboxview
 						<td>".$position."</td>
 						<td>".\quizzbox\model\joueur::find($unScore->pivot->id_joueur)->first()->pseudo."</td>
 						<td>".$unScore->pivot->score."</td>
+						<td>".$unScore->pivot->dateHeure."</td>
 					</tr>
 				";
 				$position++;
