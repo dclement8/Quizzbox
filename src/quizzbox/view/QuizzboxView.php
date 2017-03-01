@@ -240,7 +240,7 @@ class quizzboxview
 								".$this->calculDifficulteQuizz($unQuizz)."
 							</li>
 							<li>
-								<form method='get' action='".$this->baseURL."/jouer/".$unQuizz->id."'>
+								<form method='get' action='".$this->baseURL."/jouer/".$unQuizz->tokenWeb."'>
 									<button type='submit'>Jouer au quizz</button>
 								</form>
 							</li>
@@ -433,7 +433,7 @@ EOT;
 	{
 		$html = "
 			<div id='jeuFrame'>
-				<iframe src='".$this->baseURL."/jeu?quizz=".$this->data."'></iframe>
+				<iframe src='".$this->baseURL."/jeu.html?quizz=".$this->data."'></iframe>
 			</div>
 		";
 		

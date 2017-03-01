@@ -533,9 +533,9 @@ class quizzboxcontrol
 	
 	public function jouer(Request $req, Response $resp, $args)
 	{
-		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		
-		if(\quizzbox\model\quizz::where('id', $id)->get()->toJson() != "[]")
+		if(\quizzbox\model\quizz::where('tokenWeb', $id)->get()->toJson() != "[]")
 		{
 			return (new \quizzbox\view\quizzboxview($id))->render('jouer', $req, $resp, $args);
 		}
