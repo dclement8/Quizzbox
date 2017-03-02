@@ -379,10 +379,30 @@ EOT;
 								<b>Difficulté évaluée : </b>
 								".$this->calculDifficulteQuizz($unQuizz)."
 							</li>
-							<li>
-								<form method='get' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/install'>
+							<li>";
+								
+			if(\quizzbox\model\quizz::where('tokenWeb', $unQuizz->tokenWeb)->get()->toJson() == "[]")
+			{
+				$html .= "
+									<form method='get' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/install'>
 									<button type='submit'>Installer le quizz</button>
-								</form>
+								</form>";
+			}
+			else
+			{
+				$leQuizz = \quizzbox\model\quizz::where('tokenWeb', $unQuizz->tokenWeb)->first()->id;
+				$html .= "
+								<b>Vous avez déjà installé le quizz</b>";
+				
+				if(isset($_SESSION["admin"]))
+				{
+					$html .= "		<form method='post' action='".$this->baseURL."/quizz/".$leQuizz."/supprimer'>
+										<button type='submit'>Désinstaller le quizz</button>
+									</form>";
+				}
+			}
+			
+			$html .= "
 							</li>
 						</ul>
 					</p>
