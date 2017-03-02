@@ -221,47 +221,54 @@ class quizzboxcontrol
 				$quizz->nom = $json->quizz->nom;
 				if(isset($json->quizz->tokenWeb))
 				{
-					$quizz->tokenWeb = $json->quizz->tokenWeb;
-					if(isset($json->quizz->questions))
+					if(\quizzbox\model\quizz::where('tokenWeb', $json->quizz->tokenWeb)->get()->toJson() == "[]")
 					{
-						$quizz->save();
-						foreach($json->quizz->questions as $uneQuestion)
+						$quizz->tokenWeb = $json->quizz->tokenWeb;
+						if(isset($json->quizz->questions))
 						{
-							$question = new \quizzbox\model\question();
-							if(isset($uneQuestion->enonce))
+							$quizz->save();
+							foreach($json->quizz->questions as $uneQuestion)
 							{
-								$question->enonce = $uneQuestion->enonce;
-								if(isset($uneQuestion->coefficient))
+								$question = new \quizzbox\model\question();
+								if(isset($uneQuestion->enonce))
 								{
-									$question->coefficient = $uneQuestion->coefficient;
-									$question->id_quizz = $quizz->id;
-									
-									if(isset($uneQuestion->reponses))
+									$question->enonce = $uneQuestion->enonce;
+									if(isset($uneQuestion->coefficient))
 									{
-										$question->save();
-										foreach($uneQuestion->reponses as $uneReponse)
+										$question->coefficient = $uneQuestion->coefficient;
+										$question->id_quizz = $quizz->id;
+										
+										if(isset($uneQuestion->reponses))
 										{
-											$reponse = new \quizzbox\model\reponse();
-											if(isset($uneReponse->nom))
+											$question->save();
+											foreach($uneQuestion->reponses as $uneReponse)
 											{
-												$reponse->nom = $uneReponse->nom;
+												$reponse = new \quizzbox\model\reponse();
 												if(isset($uneReponse->nom))
 												{
-													$reponse->estSolution = $uneReponse->estSolution;
-													$reponse->id_question = $question->id;
-													$reponse->id_quizz = $quizz->id;
-													
-													$reponse->save();
+													$reponse->nom = $uneReponse->nom;
+													if(isset($uneReponse->nom))
+													{
+														$reponse->estSolution = $uneReponse->estSolution;
+														$reponse->id_question = $question->id;
+														$reponse->id_quizz = $quizz->id;
+														
+														$reponse->save();
+													}
+													else
+													{
+														$erreur = true;
+													}
 												}
 												else
 												{
 													$erreur = true;
 												}
 											}
-											else
-											{
-												$erreur = true;
-											}
+										}
+										else
+										{
+											$erreur = true;
 										}
 									}
 									else
@@ -274,10 +281,10 @@ class quizzboxcontrol
 									$erreur = true;
 								}
 							}
-							else
-							{
-								$erreur = true;
-							}
+						}
+						else
+						{
+							$erreur = true;
 						}
 					}
 					else
