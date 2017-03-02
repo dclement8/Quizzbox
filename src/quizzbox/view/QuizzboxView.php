@@ -314,6 +314,14 @@ EOT;
 	
 	private function networkCategories($req, $resp, $args)
 	{
+		function get_http_response_code($url)
+		{
+			$headers = get_headers($url);
+			return substr($headers[0], 9, 3);
+		}
+		
+		$url = parse_ini_file("conf/network.ini");
+		
 		$html = "<ul class='elements'>";
 		foreach($this->data as $uneCategorie)
 		{
@@ -328,7 +336,7 @@ EOT;
 					</p>
 					<p>
 						<b>Nombre de quizz : </b>
-						".\quizzbox\model\quizz::where('id_categorie', $uneCategorie->id)->count()."
+						".file_get_contents($url["url"].'/categories/'.$uneCategorie->id.'/nbQuizz', FILE_USE_INCLUDE_PATH)."
 					</p>
 					<a class='button' href='".$this->baseURL."/network/categories/".$uneCategorie->id."'>
 						Consulter les quizz
@@ -343,7 +351,13 @@ EOT;
 	
 	private function networkQuizz($req, $resp, $args)
 	{
-		$url = parse_ini_file($req->getUri()->getBasePath()."/conf/network.ini");
+		function get_http_response_code($url)
+		{
+			$headers = get_headers($url);
+			return substr($headers[0], 9, 3);
+		}
+		
+		$url = parse_ini_file("conf/network.ini");
 		
 		$html = "<p>".count($this->data)." quizz trouvé(s)</p>";
 		$html .= "<ul class='elements'>";
@@ -366,7 +380,7 @@ EOT;
 								".$this->calculDifficulteQuizz($unQuizz)."
 							</li>
 							<li>
-								<form method='post' action='".$this->baseURL."/network/quizz/".$unQuizz->token."/install'>
+								<form method='get' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/install'>
 									<button type='submit'>Installer le quizz</button>
 								</form>
 							</li>
