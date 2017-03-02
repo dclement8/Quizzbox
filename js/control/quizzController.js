@@ -126,21 +126,19 @@ function($scope, $http, $location) {
 				{
 					if(document.getElementById("mdpNetwork").value != "")
 					{
-						$http.put($scope.confNetwork + "/quizz/joueur/" + document.getElementById("pseudoNetwork").value + "@" + Sha256.hash(document.getElementById("mdpNetwork").value) + "/scores/" + localStorage.getItem('score'), JSON.stringify($scope.quizz)).then(function(response)
-						{
-							if(response.status == 201)
-							{
-								showMsg("Score envoyé !", "rgba(0,0,128,0.9)", 5000);
-								$scope.continuer();
-							}
-							else
-							{
-								showMsg("Erreur lors de l'envoi du score : " + response.data.error, "rgba(213,85,0,0.9)", 5000);
-							}
-						},
-						function(error) {
-							console.log(error);
-							showMsg("Impossible d'inscrire votre score !", "rgba(213,85,0,0.9)", 5000);
+						var urlEnvoi = $scope.confNetwork + "/quizz/joueur/" + document.getElementById("pseudoNetwork").value + "@" + Sha256.hash(document.getElementById("mdpNetwork").value) + "/scores/" + localStorage.getItem('score');
+						
+						console.log(urlEnvoi);
+						
+						var dataJson = JSON.stringify($scope.quizz);
+						
+						$.post(urlEnvoi, dataJson)
+						.done(function(data) {
+							console.log( data );
+							$scope.continuer();
+						})
+						.fail(function(error) {
+							console.log( error );
 						});
 					}
 					else

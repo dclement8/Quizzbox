@@ -1,5 +1,11 @@
 var app = angular.module("quizz", ["ngRoute"]);
 
+app.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.useXDomain = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    }
+]);
+
 /* Routeur */
 app.config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('!');

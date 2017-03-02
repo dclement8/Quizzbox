@@ -29,6 +29,7 @@ function($scope, $http, $location) {
     $scope.partieSolo = function()
 	{
         // Mode de jeu
+
 		localStorage.removeItem("mode");
 		localStorage.setItem('mode', 'solo');
 		$location.path('/jeu');
