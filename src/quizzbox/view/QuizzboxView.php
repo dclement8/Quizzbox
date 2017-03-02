@@ -277,7 +277,7 @@ class quizzboxview
 				$html .= "
 					<tr>
 						<td>".$position."</td>
-						<td>".\quizzbox\model\joueur::find($unScore->pivot->id_joueur)->first()->pseudo."</td>
+						<td>".\quizzbox\model\joueur::find($unScore->pivot->id_joueur)->pseudo."</td>
 						<td>".$unScore->pivot->score."</td>
 						<td>".$unScore->pivot->dateHeure."</td>
 					</tr>

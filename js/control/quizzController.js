@@ -78,6 +78,13 @@ function($scope, $http, $location) {
 		} 
 		return query_string;
 	}();
+	
+	// Continuer : pas d'envoi du score
+	$scope.continuer = function()
+	{
+		localStorage.removeItem("mode");
+		$location.path('/');
+	}
 
 	// Envoyer le score en local
 	$scope.envoiScoreLocal = function()
@@ -135,10 +142,19 @@ function($scope, $http, $location) {
 						$.post(urlEnvoi, dataJson)
 						.done(function(data) {
 							console.log( data );
-							$scope.continuer();
+							if(data.success != undefined)
+							{
+								showMsg("Score envoyé !", "rgba(0,0,128,0.9)", 5000);
+								$scope.continuer();
+							}
+							else
+							{
+								showMsg("Erreur lors de l'envoi du score : " + data.error, "rgba(213,85,0,0.9)", 5000);
+							}
 						})
 						.fail(function(error) {
 							console.log( error );
+							showMsg("Erreur lors de l'envoi du score", "rgba(213,85,0,0.9)", 5000);
 						});
 					}
 					else
@@ -161,13 +177,6 @@ function($scope, $http, $location) {
 			showMsg("Vous devez renseigner un pseudo !", "rgba(213,85,0,0.9)", 5000);
 		}
 	};
-	
-	// Continuer : pas d'envoi du score
-	$scope.continuer = function()
-	{
-		localStorage.removeItem("mode");
-		$location.path('/');
-	}
 	
 	// Fonction qui décrémente l'horloge/timer
 	$scope.afficherTemps = function()
