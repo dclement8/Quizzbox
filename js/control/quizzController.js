@@ -230,7 +230,7 @@ function($scope, $http, $location) {
 		}
 		else
 		{
-			$scope.tempsPasse = $scope.tempsPasse + (Math.floor(Date.now() / 1000) - $scope.timestamp);
+			$scope.tempsPasse = Math.round($scope.tempsPasse + (Math.floor(Date.now() / 1000) - $scope.timestamp));
 			$scope.afficherQuestion();
 		}
 	}
@@ -273,9 +273,9 @@ function($scope, $http, $location) {
 		$scope.timestamp = Math.floor(Date.now() / 1000);
 		
 		// Timer pour passer à la question suivante
-		$("#jeuTimer").html(($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient));
-		$scope.passerQuestion = setTimeout($scope.tropTard, (($scope.tempsReponse * 1000) / $scope.quizz.quizz.questions[$scope.question].coefficient));
-		$scope.timer = ($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient);
+		$("#jeuTimer").html(Math.round($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient));
+		$scope.passerQuestion = setTimeout($scope.tropTard, Math.round(($scope.tempsReponse * 1000) / $scope.quizz.quizz.questions[$scope.question].coefficient));
+		$scope.timer = Math.round($scope.tempsReponse / $scope.quizz.quizz.questions[$scope.question].coefficient);
 		$scope.horloge = setInterval($scope.afficherTemps, 1000);
 	}
 	
