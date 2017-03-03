@@ -146,6 +146,7 @@ function($scope, $http, $location) {
 							{
 								showMsg("Score envoyé !", "rgba(0,0,128,0.9)", 5000);
 								$scope.continuer();
+								$scope.$apply();
 							}
 							else
 							{
@@ -205,7 +206,7 @@ function($scope, $http, $location) {
 			console.log("Fin de jeu");
 			$location.path('/finJeu');
 			
-			//$scope.$apply(); // Résoue le bug de la fin de jeu qui ne se charge pas quand on arrive à la dernière question au timeOut.
+			$scope.$apply(); // Résoue le bug de la fin de jeu qui ne se charge pas quand on arrive à la dernière question au timeOut.
 			
 			$("#leScore").html(localStorage.getItem('score'));
 		}
@@ -244,8 +245,28 @@ function($scope, $http, $location) {
 		var htmlReponses = "";
 		for(var i = 0; i < $scope.quizz.quizz.questions[$scope.question].reponses.length; i++)
 		{
-			htmlReponses += "<p><input type='checkbox' name='uneReponse' />" + $scope.quizz.quizz.questions[$scope.question].reponses[i].nom + "</p>";
+			htmlReponses += "<button class='boutonReponse' style='background-color:#C0C0C0;'><input type='checkbox' name='uneReponse' />" + $scope.quizz.quizz.questions[$scope.question].reponses[i].nom + "</button><br/>";
 		}
+		
+		// Bouton cliquable de la réponse
+		function clicBouton()
+		{
+			if(this.firstChild.checked == true)
+			{
+				this.firstChild.checked = false;
+				this.style.backgroundColor = "#C0C0C0";
+			}
+			else
+			{
+				this.firstChild.checked = true;
+				this.style.backgroundColor = "#FFCC00";
+			}
+		}
+
+		$(document).ready(function()
+		{
+			$('.boutonReponse').click(clicBouton);
+		});
 		
 		$("#jeuReponses").html(htmlReponses);
 		
@@ -456,6 +477,6 @@ function($scope, $http, $location) {
 		{
 			$location.path('/');
 		}
-}
+	}
 	
 }]);
