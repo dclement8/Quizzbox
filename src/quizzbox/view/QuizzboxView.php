@@ -84,9 +84,8 @@ class quizzboxview
 					<meta charset='UTF-8'>
 					<meta name='viewport' content='width=device-width, initial-scale=1'>
 					<title>Quizzbox</title>
-					<script src='jquery.min.js'></script>
-					<script src='script.js'></script>
-					<link rel='stylesheet' type='text/css' href='css/style.css'/>
+					<script src='".$this->baseURL."/js/lib/jquery.min.js'></script>
+					<link rel='stylesheet' type='text/css' href='".$this->baseURL."/css/style.css'/>
 				</head>
 				<body>
 					<header>
@@ -250,7 +249,7 @@ class quizzboxview
 			{
 				$html .= "
 						<li>
-							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/supprimer'>
+							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/supprimer' onsubmit=\"return confirm('Voulez-vous vraiment supprimer ce quizz ?');\">
 								<button type='submit'>Supprimer le quizz</button>
 							</form>
 						</li>
