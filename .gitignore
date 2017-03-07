@@ -2,3 +2,6 @@ conf\conf.php
 conf/conf.php
 *.quizz
 conf/config.ini
+*.ini
+conf/config.ini
+conf/config.ini
