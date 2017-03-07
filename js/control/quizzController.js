@@ -185,6 +185,16 @@ function($scope, $http, $location) {
 		if($scope.timer > 0)
 		{
 			$scope.timer--;
+			
+			if($scope.timer < 6)
+			{
+				$("#jeuTimer").css("color", "red");
+			}
+			else
+			{
+				$("#jeuTimer").css("color", "black");
+			}
+			
 			$("#jeuTimer").html($scope.timer);
 		}
 	}
