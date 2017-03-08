@@ -342,11 +342,14 @@ function($scope, $http, $location) {
 				$scope.tempsPasse = $scope.tempsPasse + temps;
 				
 				showMsg("Bonne réponse", "rgba(0,128,0,0.9)", 3000);
+				
+				document.getElementsByClassName("avancementQuestion")[$scope.question].style.backgroundColor = "green";
 			}
 			else
 			{
 				// Mauvaise réponse
 				showMsg("Mauvaise réponse", "rgba(217,0,0,0.9)", 3000);
+				document.getElementsByClassName("avancementQuestion")[$scope.question].style.backgroundColor = "red";
 			}
 			
 			// Passer à la question suivante
@@ -366,6 +369,14 @@ function($scope, $http, $location) {
 		else
 		{
 			showMsg("Vous n'avez pas répondu à la question !", "rgba(213,85,0,0.9)", 3000);
+		}
+	};
+	
+	$scope.afficherAvancement = function()
+	{
+		for(var i = 0; i < $scope.quizz.quizz.questions.length; i++)
+		{
+			document.getElementById("jeuAvancement").innerHTML = document.getElementById("jeuAvancement").innerHTML + "<div class='avancementQuestion' style='display:inline;'>" + (i + 1) + "</div>";
 		}
 	};
 	
@@ -407,6 +418,9 @@ function($scope, $http, $location) {
 									$scope.finJeu = false;
 									
 									$("#jeuNom").html($scope.quizz.quizz.nom);
+									
+									// Avancement
+									$scope.afficherAvancement();
 									
 									// Afficher la première question
 									$scope.afficherQuestion();
