@@ -480,6 +480,11 @@ EOT;
 			<div id='jeuFrame'>
 				<iframe src='".$this->baseURL."/jeu.html?quizz=".$this->data."'></iframe>
 			</div>
+			<script>
+				window.onbeforeunload = function() {
+					return confirm('Souhaitez-vous quitter le jeu ?');
+				};
+			</script>
 		";
 		
 		return $html;
