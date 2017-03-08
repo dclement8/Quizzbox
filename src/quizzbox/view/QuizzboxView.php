@@ -218,7 +218,7 @@ class quizzboxview
 
 	private function afficherQuizz($req, $resp, $args)
 	{
-		$html = "<p>".count($this->data)." quizz trouvé(s)</p>";
+		$html = "<h2>Quizz installés :</h2><p>".count($this->data)." quizz trouvé(s)</p>";
 		$html .= "<ul class='elements'>";
 		foreach($this->data as $unQuizz)
 		{
@@ -296,7 +296,8 @@ class quizzboxview
 	
 	private function connexionFormAdmin($req, $resp, $args) {
 		$html = <<<EOT
-	<form method="post" action="{$this->baseURL}/admin">
+		<h2>Connexion administrateur :</h2>
+		<form method="post" action="{$this->baseURL}/admin">
 			<p><label for="mdp">Mot de passe d'administration :</label> <input type="password" name="mdp" maxlength="255" required/></p>
 			<p><input type="submit" value="S'authentifier" /></p>
 		</form>
@@ -321,31 +322,39 @@ EOT;
 		
 		$url = parse_ini_file("conf/network.ini");
 		
-		$html = "<ul class='elements'>";
-		foreach($this->data as $uneCategorie)
+		if(get_http_response_code($url["url"].'/categories/json') == "200")
 		{
-			$html .= "
-				<li class='block'>
-					<h1>
-						".$uneCategorie->nom."
-					</h1>
-					<p>
-						<b>Description : </b>
-						".$uneCategorie->description."
-					</p>
-					<p>
-						<b>Nombre de quizz : </b>
-						".file_get_contents($url["url"].'/categories/'.$uneCategorie->id.'/nbQuizz', FILE_USE_INCLUDE_PATH)."
-					</p>
-					<a class='button' href='".$this->baseURL."/network/categories/".$uneCategorie->id."'>
-						Consulter les quizz
-					</a>
-				</li>
-			";
-		}
-		$html .= "</ul>";
+			$html = "<h2>Télécharger des quizz - Catégories :</h2><ul class='elements'>";
+			foreach($this->data as $uneCategorie)
+			{
+				$html .= "
+					<li class='block'>
+						<h1>
+							".$uneCategorie->nom."
+						</h1>
+						<p>
+							<b>Description : </b>
+							".$uneCategorie->description."
+						</p>
+						<p>
+							<b>Nombre de quizz : </b>
+							".file_get_contents($url["url"].'/categories/'.$uneCategorie->id.'/nbQuizz', FILE_USE_INCLUDE_PATH)."
+						</p>
+						<a class='button' href='".$this->baseURL."/network/categories/".$uneCategorie->id."'>
+							Consulter les quizz
+						</a>
+					</li>
+				";
+			}
+			$html .= "</ul>";
 
-		return $html;
+			return $html;
+		}
+		else
+		{
+			$_SESSION["message"] = 'Impossible de récupérer les catégories sur le réseau Quizzbox Network';
+			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+		}
 	}
 	
 	private function networkQuizz($req, $resp, $args)
@@ -358,7 +367,7 @@ EOT;
 		
 		$url = parse_ini_file("conf/network.ini");
 		
-		$html = "<p>".count($this->data)." quizz trouvé(s)</p>";
+		$html = "<h2>Quizz disponibles :</h2><p>".count($this->data)." quizz trouvé(s)</p>";
 		$html .= "<ul class='elements'>";
 		foreach($this->data as $unQuizz)
 		{
@@ -416,6 +425,7 @@ EOT;
 	private function formUploadQuizz($req, $resp, $args)
 	{
 		$html = "
+			<h2>Installer un quizz depuis un fichier</h2>
 			<form method='post' action='".$this->baseURL."/uploadQuizz' enctype='multipart/form-data'>
 				<label for='quizz'>Importer votre fichier de quizz :</label> 
 				<input type='file' name='quizz' id='quizz' required />
