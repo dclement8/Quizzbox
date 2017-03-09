@@ -89,4 +89,20 @@ $app->get('/jouer/{id}', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->jouer($req, $resp, $args);
 })->setName('jouer');
 
+$app->get('/quizz/{id}/jouer', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->jouer($req, $resp, $args);
+})->setName('jouer');
+
+$app->get('/vider', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->viderTousScores($req, $resp, $args);
+})->setName('viderTousScores')->add(new quizzbox\utils\authentificationAdmin());
+
+$app->post('/quizz/{id}/vider', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->viderScores($req, $resp, $args);
+})->setName('viderScores')->add(new quizzbox\utils\authentificationAdmin());
+
+$app->get('/quizz/{id}/vider', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+})->setName('viderScores')->add(new quizzbox\utils\authentificationAdmin());
+
 $app->run();

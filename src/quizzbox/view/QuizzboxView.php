@@ -69,6 +69,9 @@ class quizzboxview
 			<li>
 				<a href='".$this->baseURL."/admin'>Déconnexion</a>
 			</li>
+			<li>
+				<a href='".$this->baseURL."/vider' onclick=\"return confirm('Êtes-vous sûr de bien vouloir supprimer tous les scores enregistrés sur la Quizzbox ?')\">Supprimer tous les scores</a>
+			</li>
 			";
 		}
 		
@@ -248,6 +251,11 @@ class quizzboxview
 			if(isset($_SESSION["admin"]))
 			{
 				$html .= "
+						<li>
+							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/vider' onsubmit=\"return confirm('Voulez-vous vraiment supprimer les scores enregistrés sur ce quizz ?');\">
+								<button type='submit'>Supprimer les scores de ce quizz</button>
+							</form>
+						</li>
 						<li>
 							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/supprimer' onsubmit=\"return confirm('Voulez-vous vraiment supprimer ce quizz ?');\">
 								<button type='submit'>Supprimer le quizz</button>
