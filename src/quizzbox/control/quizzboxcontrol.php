@@ -25,6 +25,12 @@ class quizzboxcontrol
 
 		return (new \quizzbox\view\quizzboxview($categories))->render('afficherCategories', $req, $resp, $args);
     }*/
+	
+	private function get_http_response_code($url)
+	{
+		$headers = get_headers($url);
+		return substr($headers[0], 9, 3);
+	}
 
 	public function afficherQuizz(Request $req, Response $resp, $args)
 	{
@@ -127,15 +133,9 @@ class quizzboxcontrol
 	
 	public function networkCategories(Request $req, Response $resp, $args)
 	{
-		function get_http_response_code($url)
-		{
-			$headers = get_headers($url);
-			return substr($headers[0], 9, 3);
-		}
-		
 		$url = parse_ini_file("conf/network.ini");
 		
-		if(get_http_response_code($url["url"].'/categories/json') == "200")
+		if($this->get_http_response_code($url["url"].'/categories/json') == "200")
 		{
 			$content = file_get_contents($url["url"].'/categories/json', FILE_USE_INCLUDE_PATH);
 			
@@ -166,15 +166,9 @@ class quizzboxcontrol
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		
-		function get_http_response_code($url)
-		{
-			$headers = get_headers($url);
-			return substr($headers[0], 9, 3);
-		}
-		
 		$url = parse_ini_file("conf/network.ini");
 		
-		if(get_http_response_code($url["url"].'/categories/'.$id.'/json') == "200")
+		if($this->get_http_response_code($url["url"].'/categories/'.$id.'/json') == "200")
 		{
 			$content = file_get_contents($url["url"].'/categories/'.$id.'/json', FILE_USE_INCLUDE_PATH);
 			
@@ -331,16 +325,10 @@ class quizzboxcontrol
 	{
 		// ID = Token
 		
-		function get_http_response_code($url)
-		{
-			$headers = get_headers($url);
-			return substr($headers[0], 9, 3);
-		}
-		
 		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$url = parse_ini_file("conf/network.ini");
 		
-		if(get_http_response_code($url["url"].'/quizz/'.$id.'/install') == "200")
+		if($this->get_http_response_code($url["url"].'/quizz/'.$id.'/install') == "200")
 		{
 			$content = file_get_contents($url["url"].'/quizz/'.$id.'/install', FILE_USE_INCLUDE_PATH);
 			
