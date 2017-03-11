@@ -69,6 +69,10 @@ $app->get('/network/quizz/{id}/install', function (Request $req, Response $resp,
 	return (new quizzbox\control\quizzboxcontrol($this))->networkInstallQuizz($req, $resp, $args);
 })->setName('networkInstallQuizz')->add(new quizzbox\utils\internet());
 
+$app->post('/network/quizz/{id}/update', function (Request $req, Response $resp, $args) {
+	return (new quizzbox\control\quizzboxcontrol($this))->networkUpdateQuizz($req, $resp, $args);
+})->setName('networkUpdateQuizz')->add(new quizzbox\utils\internet());
+
 $app->get('/uploadQuizz', function (Request $req, Response $resp, $args) {
 	return (new quizzbox\control\quizzboxcontrol($this))->formUploadQuizz($req, $resp, $args);
 })->setName('uploadQuizzForm');

@@ -592,4 +592,26 @@ class quizzboxcontrol
 			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 	}
+	
+	public function networkUpdateQuizz(Request $req, Response $resp, $args)
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS); // ID = Token
+		
+		if(\quizzbox\model\quizz::where('tokenWeb', $id)->get()->toJson() != "[]")
+		{
+			$idQuizz = \quizzbox\model\quizz::where('tokenWeb', $id)->first()->id;
+			\quizzbox\model\reponse::where('id_quizz', $idQuizz)->delete();
+			\quizzbox\model\question::where('id_quizz', $idQuizz)->delete();
+			\quizzbox\model\quizz::find($idQuizz)->scores()->detach();
+			\quizzbox\model\quizz::destroy($idQuizz);
+			
+			$ctrl = new \quizzbox\control\quizzboxcontrol($this);
+			$ctrl->networkInstallQuizz($req, $resp, $args);
+		}
+		else
+		{
+			$_SESSION["message"] = 'Quizz introuvable';
+			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
+		}
+	}
 }

@@ -407,8 +407,28 @@ EOT;
 			else
 			{
 				$leQuizz = \quizzbox\model\quizz::where('tokenWeb', $unQuizz->tokenWeb)->first()->id;
-				$html .= "
-								<b>Vous avez déjà installé le quizz</b>";
+				
+				$args['id'] = $unQuizz->tokenWeb;
+				$jsonQuizz = new \quizzbox\control\quizzboxcontrol($this);
+				$jsonQuizz = $jsonQuizz->getQuizz($req, $resp, $args);
+				
+				$distant = file_get_contents($url["url"].'/quizz/'.$unQuizz->tokenWeb, FILE_USE_INCLUDE_PATH);
+				
+				if(json_decode($distant) == json_decode($jsonQuizz))
+				{
+					$html .= "
+					<b>Vous avez déjà installé le quizz</b>";
+				}
+				else
+				{
+					$html .= "
+					<b>Mettez à jour ce quizz : </b>";
+					$html .= "
+						<form method='post' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/update'>
+							<button type='submit'>Mettre à jour le quizz</button>
+						</form>
+					";
+				}
 				
 				if(isset($_SESSION["admin"]))
 				{
