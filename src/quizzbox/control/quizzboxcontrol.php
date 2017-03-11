@@ -204,9 +204,13 @@ class quizzboxcontrol
 		
 		$erreur = false;
 		
+		$maj = false;
+		
 		//var_dump($json);
 		
 		$quizz = new \quizzbox\model\quizz();
+		
+		$_SESSION["message"] = "";
 		
 		if(isset($json->quizz))
 		{
@@ -215,54 +219,59 @@ class quizzboxcontrol
 				$quizz->nom = $json->quizz->nom;
 				if(isset($json->quizz->tokenWeb))
 				{
-					if(\quizzbox\model\quizz::where('tokenWeb', $json->quizz->tokenWeb)->get()->toJson() == "[]")
+					if(\quizzbox\model\quizz::where('tokenWeb', $json->quizz->tokenWeb)->get()->toJson() != "[]")
 					{
-						$quizz->tokenWeb = $json->quizz->tokenWeb;
-						if(isset($json->quizz->questions))
+						// Désinstallation du quizz déjà présent pour le mettre à jour
+						$idQuizz = \quizzbox\model\quizz::where('tokenWeb', $json->quizz->tokenWeb)->first()->id;
+						\quizzbox\model\reponse::where('id_quizz', $idQuizz)->delete();
+						\quizzbox\model\question::where('id_quizz', $idQuizz)->delete();
+						\quizzbox\model\quizz::find($idQuizz)->scores()->detach();
+						\quizzbox\model\quizz::destroy($idQuizz);
+						
+						$maj = true;
+					}
+					
+					$quizz->tokenWeb = $json->quizz->tokenWeb;
+					if(isset($json->quizz->questions))
+					{
+						$quizz->save();
+						foreach($json->quizz->questions as $uneQuestion)
 						{
-							$quizz->save();
-							foreach($json->quizz->questions as $uneQuestion)
+							$question = new \quizzbox\model\question();
+							if(isset($uneQuestion->enonce))
 							{
-								$question = new \quizzbox\model\question();
-								if(isset($uneQuestion->enonce))
+								$question->enonce = $uneQuestion->enonce;
+								if(isset($uneQuestion->coefficient))
 								{
-									$question->enonce = $uneQuestion->enonce;
-									if(isset($uneQuestion->coefficient))
+									$question->coefficient = $uneQuestion->coefficient;
+									$question->id_quizz = $quizz->id;
+									
+									if(isset($uneQuestion->reponses))
 									{
-										$question->coefficient = $uneQuestion->coefficient;
-										$question->id_quizz = $quizz->id;
-										
-										if(isset($uneQuestion->reponses))
+										$question->save();
+										foreach($uneQuestion->reponses as $uneReponse)
 										{
-											$question->save();
-											foreach($uneQuestion->reponses as $uneReponse)
+											$reponse = new \quizzbox\model\reponse();
+											if(isset($uneReponse->nom))
 											{
-												$reponse = new \quizzbox\model\reponse();
+												$reponse->nom = $uneReponse->nom;
 												if(isset($uneReponse->nom))
 												{
-													$reponse->nom = $uneReponse->nom;
-													if(isset($uneReponse->nom))
-													{
-														$reponse->estSolution = $uneReponse->estSolution;
-														$reponse->id_question = $question->id;
-														$reponse->id_quizz = $quizz->id;
-														
-														$reponse->save();
-													}
-													else
-													{
-														$erreur = true;
-													}
+													$reponse->estSolution = $uneReponse->estSolution;
+													$reponse->id_question = $question->id;
+													$reponse->id_quizz = $quizz->id;
+													
+													$reponse->save();
 												}
 												else
 												{
 													$erreur = true;
 												}
 											}
-										}
-										else
-										{
-											$erreur = true;
+											else
+											{
+												$erreur = true;
+											}
 										}
 									}
 									else
@@ -275,10 +284,10 @@ class quizzboxcontrol
 									$erreur = true;
 								}
 							}
-						}
-						else
-						{
-							$erreur = true;
+							else
+							{
+								$erreur = true;
+							}
 						}
 					}
 					else
@@ -311,12 +320,20 @@ class quizzboxcontrol
 				\quizzbox\model\quizz::destroy($quizz->id);
 			}
 			
-			$_SESSION["message"] = 'Erreur lors de l\'installation du quizz';
+			$_SESSION["message"] .= 'Erreur lors de l\'installation du quizz';
 			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 		else
 		{
-			$_SESSION["message"] = 'Quizz installé avec succès !';
+			if($maj == false)
+			{
+				$_SESSION["message"] .= 'Quizz installé avec succès !';
+			}
+			else
+			{
+				$_SESSION["message"] .= 'Quizz mis à jour avec succès !';
+			}
+			
 			return (new \quizzbox\control\quizzboxcontrol($this))->accueil($req, $resp, $args);
 		}
 	}
@@ -599,12 +616,6 @@ class quizzboxcontrol
 		
 		if(\quizzbox\model\quizz::where('tokenWeb', $id)->get()->toJson() != "[]")
 		{
-			$idQuizz = \quizzbox\model\quizz::where('tokenWeb', $id)->first()->id;
-			\quizzbox\model\reponse::where('id_quizz', $idQuizz)->delete();
-			\quizzbox\model\question::where('id_quizz', $idQuizz)->delete();
-			\quizzbox\model\quizz::find($idQuizz)->scores()->detach();
-			\quizzbox\model\quizz::destroy($idQuizz);
-			
 			$ctrl = new \quizzbox\control\quizzboxcontrol($this);
 			$ctrl->networkInstallQuizz($req, $resp, $args);
 		}
