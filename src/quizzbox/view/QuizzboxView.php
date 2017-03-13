@@ -89,6 +89,7 @@ class quizzboxview
 					<title>Quizzbox</title>
 					<script src='".$this->baseURL."/js/lib/jquery.min.js'></script>
 					<link rel='stylesheet' type='text/css' href='".$this->baseURL."/css/style.css'/>
+					<link rel='stylesheet' type='text/css' href='".$this->baseURL."/css/main.css'/>
 				</head>
 				<body>
 					<header>
@@ -96,7 +97,7 @@ class quizzboxview
 							Quizzbox
 						</h1>
 					</header>
-					<ul id='menu'>
+					<ul id='menu' class='navbar'>
 						".$this->menu($req, $resp, $args)."
 					</ul>
 					<form id='recherche' name='recherche' method='GET' action='".$this->baseURL."/recherche'>
@@ -112,7 +113,7 @@ class quizzboxview
 		}
 
 		$html .= " required />
-						<button type='submit' id='actionRecherche'>OK</button>
+						<button class=\"btn\" type='submit' id='actionRecherche'>OK</button>
 					</form>
 
 		";
@@ -221,13 +222,13 @@ class quizzboxview
 
 	private function afficherQuizz($req, $resp, $args)
 	{
-		$html = "<h2>Quizz installés :</h2><p>".count($this->data)." quizz trouvé(s)</p>";
+		$html = "<h2 class=\"title\">Quizz installés :</h2><p>".count($this->data)." quizz trouvé(s)</p>";
 		$html .= "<ul class='elements'>";
 		foreach($this->data as $unQuizz)
 		{
 			$html .= "
 				<li class='block'>
-					<h1>
+					<h1 class=\"title\">
 						".$unQuizz->nom."
 					</h1>
 					<p>
@@ -304,10 +305,10 @@ class quizzboxview
 	
 	private function connexionFormAdmin($req, $resp, $args) {
 		$html = <<<EOT
-		<h2>Connexion administrateur :</h2>
+		<h2 class="title" >Connexion administrateur :</h2>
 		<form method="post" action="{$this->baseURL}/admin">
 			<p><label for="mdp">Mot de passe d'administration :</label> <input type="password" name="mdp" maxlength="255" required/></p>
-			<p><input type="submit" value="S'authentifier" /></p>
+			<p><input type="submit" class="btn" value="S'authentifier" /></p>
 		</form>
 EOT;
 		return $html;
@@ -332,12 +333,12 @@ EOT;
 		
 		if(get_http_response_code($url["url"].'/categories/json') == "200")
 		{
-			$html = "<h2>Télécharger des quizz - Catégories :</h2><ul class='elements'>";
+			$html = "<h2 class=\"title\">Télécharger des quizz - Catégories :</h2><ul class='elements'>";
 			foreach($this->data as $uneCategorie)
 			{
 				$html .= "
 					<li class='block'>
-						<h1>
+						<h1 class=\"title\">
 							".$uneCategorie->nom."
 						</h1>
 						<p>
@@ -453,11 +454,11 @@ EOT;
 	private function formUploadQuizz($req, $resp, $args)
 	{
 		$html = "
-			<h2>Installer un quizz depuis un fichier</h2>
+			<h2 class=\"title\">Installer un quizz depuis un fichier</h2>
 			<form method='post' action='".$this->baseURL."/uploadQuizz' enctype='multipart/form-data'>
 				<label for='quizz'>Importer votre fichier de quizz :</label> 
 				<input type='file' name='quizz' id='quizz' required />
-				<button type='submit' name='uploader'>Installer le quizz</button>
+				<button type='submit' class=\"btn\" name='uploader'>Installer le quizz</button>
 			</form>
 		";
 
