@@ -93,7 +93,7 @@ class quizzboxview
 				</head>
 				<body>
 					<header>
-						<h1>
+						<h1 class=\"redtitle\">
 							Quizzbox
 						</h1>
 					</header>
