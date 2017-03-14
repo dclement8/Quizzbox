@@ -244,7 +244,7 @@ class quizzboxview
 							</li>
 							<li>
 								<form method='get' action='".$this->baseURL."/jouer/".$unQuizz->tokenWeb."'>
-									<button type='submit'>Jouer au quizz</button>
+									<button type='submit' class='btn'>Jouer au quizz</button>
 								</form>
 							</li>
 							";
@@ -254,12 +254,12 @@ class quizzboxview
 				$html .= "
 						<li>
 							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/vider' onsubmit=\"return confirm('Voulez-vous vraiment supprimer les scores enregistrés sur ce quizz ?');\">
-								<button type='submit'>Supprimer les scores de ce quizz</button>
+								<button type='submit' class='btn'>Supprimer les scores de ce quizz</button>
 							</form>
 						</li>
 						<li>
 							<form method='post' action='".$this->baseURL."/quizz/".$unQuizz->id."/supprimer' onsubmit=\"return confirm('Voulez-vous vraiment supprimer ce quizz ?');\">
-								<button type='submit'>Supprimer le quizz</button>
+								<button type='submit' class='btn'>Supprimer le quizz</button>
 							</form>
 						</li>
 				";
@@ -402,7 +402,7 @@ EOT;
 			{
 				$html .= "
 									<form method='get' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/install'>
-									<button type='submit'>Installer le quizz</button>
+									<button type='submit' class='btn'>Installer le quizz</button>
 								</form>";
 			}
 			else
@@ -426,7 +426,7 @@ EOT;
 					<b>Mettez à jour ce quizz : </b>";
 					$html .= "
 						<form method='post' action='".$this->baseURL."/network/quizz/".$unQuizz->tokenWeb."/update'>
-							<button type='submit'>Mettre à jour le quizz</button>
+							<button type='submit' class='btn'>Mettre à jour le quizz</button>
 						</form>
 					";
 				}
@@ -434,7 +434,7 @@ EOT;
 				if(isset($_SESSION["admin"]))
 				{
 					$html .= "		<form method='post' action='".$this->baseURL."/quizz/".$leQuizz."/supprimer'>
-										<button type='submit'>Désinstaller le quizz</button>
+										<button type='submit' class='btn'>Désinstaller le quizz</button>
 									</form>";
 				}
 			}

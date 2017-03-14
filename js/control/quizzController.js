@@ -377,7 +377,7 @@ function($scope, $http, $location) {
 	{
 		for(var i = 0; i < $scope.quizz.quizz.questions.length; i++)
 		{
-			document.getElementById("jeuAvancement").innerHTML = document.getElementById("jeuAvancement").innerHTML + "<div class='avancementQuestion' style='display:inline;'>" + (i + 1) + "</div>";
+			document.getElementById("jeuAvancement").innerHTML = document.getElementById("jeuAvancement").innerHTML + "<div class='avancementQuestion'>" + (i + 1) + "</div>";
 		}
 	};
 	
