@@ -93,8 +93,8 @@ class quizzboxview
 				</head>
 				<body>
 					<header>
-						<h1 class=\"redtitle\">
-							Quizzbox
+						<h1>
+							<a href='".$this->baseURL."'>Quizzbox</a>
 						</h1>
 					</header>
 					<ul id='menu' class='navbar'>
