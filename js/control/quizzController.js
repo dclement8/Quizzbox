@@ -47,10 +47,10 @@ function($scope, $http, $location) {
 		bgcolor = typeof bgcolor !== 'undefined' ? bgcolor : "rgba(0,128,0,0.9)";
 		time = typeof time !== 'undefined' ? time : 5000;
 
-		$("#message").html(msg);
-		$("#message").css("background-color", bgcolor);
-		$("#message").fadeIn();
-		setTimeout(function(){ $("#message").fadeOut(); }, time);
+		$("#messageJeu").html(msg);
+		$("#messageJeu").css("background-color", bgcolor);
+		$("#messageJeu").fadeIn();
+		setTimeout(function(){ $("#messageJeu").fadeOut(); }, time);
 	}
 	
 	// Récupère un paramètre en GET dans l'URL : getParamURL.param
