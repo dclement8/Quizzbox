@@ -225,6 +225,7 @@ function($scope, $http, $location) {
 	// Fonction qui se déclanche après le temps imparti
 	$scope.tropTard = function()
 	{
+		document.getElementsByClassName("avancementQuestion")[$scope.question].style.backgroundColor = "black";
 		$scope.question++;
 			
 		if($scope.quizz.quizz.questions[$scope.question] == null)
@@ -249,7 +250,7 @@ function($scope, $http, $location) {
 	$scope.afficherQuestion = function()
 	{
 		//console.log($scope.quizz);
-		
+		document.getElementsByClassName("avancementQuestion")[$scope.question].style.backgroundColor = "blue";
 		$("#jeuEnnonce").html($scope.quizz.quizz.questions[$scope.question].enonce);
 		
 		var htmlReponses = "";
