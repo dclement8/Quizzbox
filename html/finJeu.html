@@ -4,7 +4,7 @@
 
 	<div id="scoreFinal">
 		Votre score final :
-		<div id="leScore"></div>
+		<div id="leScore" style="font-weight:bold;color:red;display:inline;"></div>
 	</div>
 	
 	<div id="tempsFinal"></div>
@@ -17,7 +17,7 @@
 		<label for="mdpNetwork">Mot de passe</label>
 		<input type="password" id="mdpNetwork" name="mdpNetwork"/>
 		<br/>
-		<button ng-click="envoiScoreNetwork()">Envoyer</button>
+		<button ng-click="envoiScoreNetwork()" class="btn">Envoyer</button>
 		<br/>
 		<a href="{{confNetwork}}/inscription" target="_blank">Créer un compte sur Quizzbox Network</a>
 		<br/>
@@ -28,11 +28,11 @@
 		<h2>Envoyer votre score en local sur la Quizzbox</h2>
 		<label for="pseudoLocal">Entrez un pseudo</label>
 		<input type="text" id="pseudoLocal" name="pseudoLocal"/>
-		<button ng-click="envoiScoreLocal()">Envoyer</button>
+		<button ng-click="envoiScoreLocal()" class="btn">Envoyer</button>
 	</div>
-	
+	<br/>
 	<div>
-		<button ng-click="continuer()">Ne pas envoyer</button>
+		<button ng-click="continuer()" class="btn">Ne pas envoyer</button>
 	</div>
 	
     <div id="messageJeu"></div>
