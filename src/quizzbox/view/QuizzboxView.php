@@ -45,7 +45,7 @@ class quizzboxview
 			
 			$html .= "
 			<li>
-				<a href='".$this->baseURL."/network'>Télécharger des quizz</a>
+				<a href='".$this->baseURL."/network'>Quizzbox Network</a>
 			</li>
 			";
 		}
