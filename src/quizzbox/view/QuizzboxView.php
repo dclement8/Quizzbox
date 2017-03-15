@@ -268,38 +268,45 @@ class quizzboxview
 
 			$html .= "
 						</ul>
-					</p>
-					<h2>Classement des 10 meilleurs joueurs en local :</h2>
-					<button class=\"btn btn-red classementBouton\" style='max-width:300px;'>↓ Afficher le classement ↓</button>
-					<table class='classement'>
-						<tr>
-							<th>Position</th>
-							<th>Joueur</th>
-							<th>Score</th>
-							<th>Date/heure</th>
-						</tr>
-						";
-
-			$scores = \quizzbox\model\quizz::find($unQuizz->id)->scores()->orderBy('score', 'DESC')->take(10)->get();
-			$position = 1;
-			foreach($scores as $unScore)
+					</p>";
+					
+			if(\quizzbox\model\quizz::find($unQuizz->id)->scores()->orderBy('score', 'DESC')->take(10)->count() != 0)
 			{
 				$html .= "
-					<tr>
-						<td>".$position."</td>
-						<td>".\quizzbox\model\joueur::find($unScore->pivot->id_joueur)->pseudo."</td>
-						<td>".$unScore->pivot->score."</td>
-						<td>".$unScore->pivot->dateHeure."</td>
-					</tr>
-				";
-				$position++;
-			}
+						<h2>Classement des 10 meilleurs joueurs en local :</h2>
+						<button class=\"btn btn-red classementBouton\" style='max-width:300px;'>↓ Afficher le classement ↓</button>
+						<table class='classement'>
+							<tr>
+								<th>Position</th>
+								<th>Joueur</th>
+								<th>Score</th>
+								<th>Date/heure</th>
+							</tr>
+							";
 
+				$scores = \quizzbox\model\quizz::find($unQuizz->id)->scores()->orderBy('score', 'DESC')->take(10)->get();
+				$position = 1;
+				foreach($scores as $unScore)
+				{
+					$html .= "
+						<tr>
+							<td>".$position."</td>
+							<td>".\quizzbox\model\joueur::find($unScore->pivot->id_joueur)->pseudo."</td>
+							<td>".$unScore->pivot->score."</td>
+							<td>".$unScore->pivot->dateHeure."</td>
+						</tr>
+					";
+					$position++;
+				}
+				
+				$html .= "
+						</table>";
+			}
+			
 			$url = parse_ini_file("conf/network.ini");
 			$nomRecherche = str_replace(" ","+",$unQuizz->nom);
 			
 			$html .= "
-					</table>
 					<p>
 						<a href='".$url["url"]."/recherche?q=".$nomRecherche."' target='_blank'>Accéder au classement en ligne</a>
 					</p>
