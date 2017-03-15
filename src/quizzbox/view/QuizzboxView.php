@@ -295,9 +295,15 @@ class quizzboxview
 				$position++;
 			}
 
-
+			$url = parse_ini_file("conf/network.ini");
+			$nomRecherche = str_replace(" ","+",$unQuizz->nom);
+			
 			$html .= "
-					</table></li>
+					</table>
+					<p>
+						<a href='".$url["url"]."/recherche?q=".$nomRecherche."' target='_blank'>Accéder au classement en ligne</a>
+					</p>
+					</li>
 			";
 		}
 		$html .= "</ul>";
