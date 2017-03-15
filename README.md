@@ -90,6 +90,7 @@ sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf
 ![wifi mobile](http://image.noelshack.com/fichiers/2017/11/1489616772-wifi.png)
 
 Pour couper le point d'accès : Ctrl + C
+
 Démarrage automatique :
 ```
 sudo nano /etc/default/hostapd
