@@ -88,6 +88,7 @@ class quizzboxview
 					<meta name='viewport' content='width=device-width, initial-scale=1'>
 					<title>Quizzbox</title>
 					<script src='".$this->baseURL."/js/lib/jquery.min.js'></script>
+					<script type='text/javascript' src='".$this->baseURL."/js/classement.js'></script>
 					<link rel='stylesheet' type='text/css' href='".$this->baseURL."/css/style.css'/>
 					<link rel='stylesheet' type='text/css' href='".$this->baseURL."/css/main.css'/>
 				</head>
@@ -269,6 +270,7 @@ class quizzboxview
 						</ul>
 					</p>
 					<h2>Classement des 10 meilleurs joueurs en local :</h2>
+					<button class=\"btn btn-red classementBouton\" style='max-width:300px;'>↓ Afficher le classement ↓</button>
 					<table class='classement'>
 						<tr>
 							<th>Position</th>
