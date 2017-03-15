@@ -155,7 +155,7 @@ function($scope, $http, $location) {
 						})
 						.fail(function(error) {
 							console.log( error );
-							showMsg("Erreur lors de l'envoi du score", "rgba(213,85,0,0.9)", 5000);
+							showMsg("Erreur lors de l'envoi du score : " + $.parseJSON(error.responseText).error, "rgba(213,85,0,0.9)", 5000);
 						});
 					}
 					else
