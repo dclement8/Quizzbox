@@ -454,7 +454,14 @@ EOT;
 				}
 			}
 			
+			$url = parse_ini_file("conf/network.ini");
+			$nomRecherche = str_replace(" ","+",$unQuizz->nom);
+			
 			$html .= "
+							</li>
+							<br/>
+							<li>
+								<a href='".$url["url"]."/recherche?q=".$nomRecherche."' target='_blank'>Plus d'infos...</a>
 							</li>
 						</ul>
 					</p>
