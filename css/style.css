@@ -165,3 +165,11 @@ table
 		width: 100%;
 	}
 }
+
+@media screen and (max-width: 350px)
+{
+	.navbar li
+	{
+		width: 100%;
+	}
+}
