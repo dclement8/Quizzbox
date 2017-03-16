@@ -414,6 +414,16 @@ function($scope, $http, $location) {
 									console.log("Partie en cours");
 									$scope.quizz = response.data;
 
+									if(localStorage.getItem('mode') == "random")
+									{
+										function shuffle(o) {
+											for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+											return o;
+										};
+										
+										$scope.quizz.quizz.questions = shuffle($scope.quizz.quizz.questions);
+									}
+									
 									$scope.score = 0;
 									$scope.question = 0;
 									$scope.finJeu = false;

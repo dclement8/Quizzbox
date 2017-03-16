@@ -42,4 +42,12 @@ function($scope, $http, $location) {
 		localStorage.setItem('mode', 'multi');
 		$location.path('/jeu');
 	};
+	
+	$scope.partieRandom = function()
+	{
+        // Mode de jeu
+		localStorage.removeItem("mode");
+		localStorage.setItem('mode', 'random');
+		$location.path('/jeu');
+	};
 }]);
