@@ -18,6 +18,9 @@ Ce sont des modèles de fichiers de configuration que vous devez créer (admin.i
 - config.ini contient les informations de connexion à la base de données.
 - network.ini contient l'URI de la plateforme Quizzbox Network pour l'envoi des scores.
 
+- Serveur 1 : https://livekiller44.cf/quizzbox/
+- Serveur 2 : https://quizzbox.cf/Quizzbox-Network/
+
 # Configuration Wifi
 
 Il faut ensuite configurer le Raspberry Pi pour en faire un point d'accès wifi.
@@ -146,3 +149,7 @@ sudo reboot
 
 Pour jouer :
 accédez à 192.168.3.1 ou à l'adresse IP du point d'accès défini, depuis votre navigateur.
+
+# Ajouter un quizz
+Vous pouvez ajouter un quizz en uploadant un fichier avec l'extension .quizz depuis la page "Installer un quizz depuis un fichier".
+Les quizzs peuvent être téléchargés depuis la plateforme Quizzbox-Network et vous pouvez en créer depuis cette même plateforme.
