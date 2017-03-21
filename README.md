@@ -7,7 +7,18 @@ Créez, partagez et jouez à des quizzs facilement, seul ou avec des amis, sur u
 - Système d'exploitation recommandé : Raspbian Jessie ou Raspbian Jessie Lite (https://www.raspberrypi.org/downloads/raspbian/)
 - Un serveur apache2 avec mod_rewrite, PHP 5.6 et une base de données MySQL ou MariaDB
 
-# Configuration serveur
+# Installer votre Quizzbox depuis une image
+Cette méthode est recommandée et est la plus rapide pour installer votre Quizzbox, même avec très peu de connaissances.
+Elle est expliquée ici ("Créez votre propre Quizzbox") : 
+
+https://webetu.iutnc.univ-lorraine.fr/www/piguet2u/cms_projettutore/
+
+Pour jouer, lancez votre navigateur et accédez à http://quizzbox
+Pour ajouter un quizz, voir section "Ajouter un quizz".
+
+# Installer votre Quizzbox "manuellement" depuis les sources
+Cette méthode est plus longue mais vous permet une plus grande personnalisation.
+### Configuration serveur
 ```
 git clone https://github.com/hitoshi54/Quizzbox.git
 ```
@@ -21,7 +32,7 @@ Ce sont des modèles de fichiers de configuration que vous devez créer (admin.i
 - Serveur 1 : https://livekiller44.cf/quizzbox/
 - Serveur 2 : https://quizzbox.cf/Quizzbox-Network/
 
-# Configuration Wifi
+### Configuration Wifi
 
 Il faut ensuite configurer le Raspberry Pi pour en faire un point d'accès wifi.
 Le Raspberry doit être connecté en ethernet.
@@ -148,7 +159,7 @@ sudo reboot
 ```
 
 Pour jouer :
-accédez à 192.168.3.1 ou à l'adresse IP du point d'accès défini, depuis votre navigateur.
+accédez à 192.168.3.1 ou à l'adresse IP du point d'accès défini ou le hostname si défini, depuis votre navigateur.
 
 # Ajouter un quizz
 Vous pouvez ajouter un quizz en uploadant un fichier avec l'extension .quizz depuis la page "Installer un quizz depuis un fichier".
