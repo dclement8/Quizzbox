@@ -79,6 +79,10 @@ function($scope, $http, $location) {
 		return query_string;
 	}();
 	
+	function htmlEntities(str) {
+		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	}
+	
 	// Continuer : pas d'envoi du score
 	$scope.continuer = function()
 	{
@@ -251,12 +255,12 @@ function($scope, $http, $location) {
 	{
 		//console.log($scope.quizz);
 		document.getElementsByClassName("avancementQuestion")[$scope.question].style.backgroundColor = "blue";
-		$("#jeuEnnonce").html($scope.quizz.quizz.questions[$scope.question].enonce);
+		$("#jeuEnnonce").html(htmlEntities($scope.quizz.quizz.questions[$scope.question].enonce));
 		
 		var htmlReponses = "";
 		for(var i = 0; i < $scope.quizz.quizz.questions[$scope.question].reponses.length; i++)
 		{
-			htmlReponses += "<button class='boutonReponse' style='background-color:#C0C0C0;'><input type='checkbox' name='uneReponse' />" + $scope.quizz.quizz.questions[$scope.question].reponses[i].nom + "</button><br/>";
+			htmlReponses += "<button class='boutonReponse' style='background-color:#C0C0C0;'><input type='checkbox' name='uneReponse' />" + htmlEntities($scope.quizz.quizz.questions[$scope.question].reponses[i].nom) + "</button><br/>";
 		}
 		
 		// Bouton cliquable de la réponse
@@ -428,7 +432,7 @@ function($scope, $http, $location) {
 									$scope.question = 0;
 									$scope.finJeu = false;
 									
-									$("#jeuNom").html($scope.quizz.quizz.nom);
+									$("#jeuNom").html(htmlEntities($scope.quizz.quizz.nom));
 									
 									// Avancement
 									$scope.afficherAvancement();
