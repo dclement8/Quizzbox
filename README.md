@@ -130,8 +130,6 @@ interface=wlan0
 bind-interfaces
 # Transférer les requêtes DNS sur les DNS d'OpenDns
 server=208.67.222.222
-domain-needed
-bogus-priv
 # Plage DHCP : on attribuera les adresses IP entre 192.168.3.50 et 192.168.3.150 pour une durée de 12h
 dhcp-range=192.168.3.50,192.168.3.150,12h
 ```
@@ -159,7 +157,7 @@ sudo reboot
 ```
 
 Pour jouer :
-accédez à 192.168.3.1 ou à l'adresse IP du point d'accès défini ou le hostname si défini, depuis votre navigateur.
+accédez à 192.168.3.1 ou à l'adresse IP du point d'accès défini ou le hostname si défini (/etc/hosts), depuis votre navigateur.
 
 # Ajouter un quizz
 Vous pouvez ajouter un quizz en uploadant un fichier avec l'extension .quizz depuis la page "Installer un quizz depuis un fichier".
