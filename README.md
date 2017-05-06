@@ -20,7 +20,7 @@ Pour ajouter un quizz, voir section "Ajouter un quizz".
 Cette méthode est plus longue mais vous permet une plus grande personnalisation.
 ### Configuration serveur
 ```
-git clone https://github.com/hitoshi54/Quizzbox.git
+git clone https://github.com/dclement8/Quizzbox.git
 ```
 Dans le répertoire conf de Quizzbox se trouve admin.ini.modele, config.ini.modele et network.ini.modele.
 Ce sont des modèles de fichiers de configuration que vous devez créer (admin.ini, config.ini, network.ini).
